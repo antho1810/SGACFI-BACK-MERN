@@ -1,4 +1,7 @@
 import { Schema, model } from "mongoose";
+
+
+
 const UserSchema = new Schema(
   {
     nombre: {
@@ -9,7 +12,14 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
-    rol: [],
+    cargo: {
+      type: String,
+      required: true,
+    },
+    rol: [{
+      ref: "Role",
+      type: Schema.Types.ObjectId,
+    }],
     cedula: {
       type: String,
       unique: true,
