@@ -1,4 +1,4 @@
-import Acta from '../models/Acta'
+import Acta from '../models/Acta.js'
 
 // GET ACTAS
 export const getActas = async (req, res) => {

@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
-const URI = "mongodb://127.0.0.1/sgacfi-final"
+const URI =
+  "mongodb+srv://asistente_fi:JjOgj2gSCX5BGfO8@cluster0.s5cbdjs.mongodb.net/?retryWrites=true&w=majority";
 
 mongoose.connect(URI, {
   useNewUrlParser: true,
