@@ -59,3 +59,17 @@ export const isDecano = async (req, res, next) => {
       .status(403)
       .json({ message: "Requiere contar con un rol de decano" });
 };
+
+export const isSecretariaOrDecano = async (req, res, next) => {
+   const user = await User.findById(req.userId);
+  const roles = await Role.find({ _id: { $in: user.rol } });
+
+    console.log(roles);
+    for (let i = 0; i < roles.length; i++) {
+      if (roles[i].nombre === "decano" || roles[i].nombre === "secretaria") {
+        next();
+        return;
+      }
+    }
+  return res.status(403).json({message: "Requiere contar con un rol de decano o secretario"})
+}

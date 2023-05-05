@@ -1,4 +1,4 @@
-import { ROLESARRAY } from "../models/Role.js"
+
 import User from "../models/User.js"
 
 export const checkDuplicateEmailAndCedulaAndTelefono = async (req, res, next) => {
@@ -12,19 +12,5 @@ export const checkDuplicateEmailAndCedulaAndTelefono = async (req, res, next) =>
   if(telefono) return res.status(400).json({message: "El telefono ya se encuentra registrado"})
   
   next();
-}
-
-export const checkRolesExisted = (req, res, next) => {
-  if (req.body.rol) {
-    for (let i = 0; i < req.body.rol.length; i++) {
-      if (!ROLESARRAY.includes(req.body.rol[i])) {
-        return res
-          .status(400)
-          .json({ message: `El rol ${req.body.rol[i]} no se encuentra en el sistema` })
-      }
-    }
-  }
-
-  next()
 }
 
