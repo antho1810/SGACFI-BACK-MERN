@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 
-import * as actasCtrl from "../controllers/actas.controller.js";
+import * as actasCtrl from "../../controllers/actas.controller.js";
 
 // ACTAS ROUTES CRUD
 router.get("/", actasCtrl.getActas),

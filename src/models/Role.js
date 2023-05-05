@@ -6,6 +6,8 @@ export const ROLES = {
   participante: "participante"
 }
 
+export const ROLESARRAY = ["decano", "secretaria", "participante"];
+
 const RoleSchema = new Schema({
   nombre: String
 },{
