@@ -1,4 +1,5 @@
 import Acta from "../../models/actas/Acta.js";
+import Modalidad from "../../models/actas/Modalidad.js";
 
 // GET ACTAS
 export const getActas = async (req, res) => {
@@ -19,6 +20,7 @@ export const createActas = async (req, res) => {
     fechaCreacion,
     lugar,
     modalidad,
+    estado,
     horaInicia,
     horaFinal,
     // miembrosPresentes,
@@ -33,7 +35,7 @@ export const createActas = async (req, res) => {
     numeroRef,
     fechaCreacion,
     lugar,
-    modalidad,
+    estado,
     horaInicia,
     horaFinal,
     // miembrosPresentes,
@@ -43,6 +45,15 @@ export const createActas = async (req, res) => {
     // votos,
     // docsSoporte
   });
+
+  if (modalidad) {
+    const foundModalidades = await Modalidad.find({
+      nombre: { $in: modalidad },
+    });
+    newActa.modalidad = foundModalidades.map((modalidad) => modalidad._id);
+  } else {
+    return res.status(400).json({ message: "Debe contar con una modalidad" });
+  }
 
   console.log(newActa);
 
@@ -62,9 +73,18 @@ export const updateActas = async (req, res) => {
   res.status(200).json({ message: "Acta actualizada con exito" });
 };
 
+// UPDATE STATUS ACTA
+export const updateStatusActa = async (req, res) => {
+  const foundedActa = await Acta.findByIdAndUpdate(req.params.id, req.body,{new: true});
+
+  res.status(200).json({message: "Acta autorizada"})
+ }
+
 // DELETE ACTAS
 export const deleteActas = async (req, res) => {
   const { id } = req.params;
   await Acta.findByIdAndDelete(id);
   res.status(204).json({ message: "Acta eliminada con exito" });
 };
+
+

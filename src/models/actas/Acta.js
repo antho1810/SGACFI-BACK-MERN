@@ -16,6 +16,10 @@ const ActaSchema = new Schema(
       required: true,
     },
     modalidad: {
+      ref: "Modalidad",
+      type: Schema.Types.ObjectId
+    },
+    estado: {
       type: String,
       required: true,
     },

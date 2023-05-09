@@ -11,13 +11,24 @@ router.get("/id/:id", [authJwt.verifyToken], actasCtrl.getActasById);
 router.post(
   "/",
   // Verificaciones post
-  [authJwt.verifyToken, authJwt.isSecretariaOrDecano, checking.checkModalidadExisted],
+  [
+    authJwt.verifyToken,
+    authJwt.isSecretariaOrDecano,
+    checking.checkModalidadExisted,
+  ],
   actasCtrl.createActas
 );
 router.put(
   "/id/:id",
   [authJwt.verifyToken, authJwt.isSecretaria, checking.checkModalidadExisted],
   actasCtrl.updateActas
+);
+
+router.put(
+  "/autorize/id/:id",
+  // Cambiar el authJwt.isSecretariaOrDecano a authJwt.isDecano
+  [authJwt.verifyToken, authJwt.isSecretariaOrDecano],
+  actasCtrl.updateStatusActa
 );
 router.delete(
   "/id/:id",

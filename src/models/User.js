@@ -1,5 +1,7 @@
 import { Schema, model } from "mongoose";
-import bcrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs';
+import Joi from 'joi';
+import passwordComplexity from 'joi-password-complexity';
 
 const UserSchema = new Schema(
   {
@@ -47,12 +49,27 @@ const UserSchema = new Schema(
 );
 
 UserSchema.statics.encryptPassword = async (password) => {
-  const salt = await bcrypt.genSalt(10)
+  const salt = await bcrypt.genSalt(Number(10))
   return await bcrypt.hash(password, salt)
 }
  
 UserSchema.statics.comparePassword = async (password, receivedPassword) => {
   return await bcrypt.compare(password, receivedPassword)
- }
+}
+
+export const validate = (data) => {
+  const schema = Joi.object({
+    nombre: Joi.string().required().label("Nombre"),
+    apellido: Joi.string().required().label("Apellido"),
+    cargo: Joi.string().required().label("Cargo"),
+    cedula: Joi.string().required().label("Cedula"),
+    rol: Joi.array().required().label("Rol/roles"),
+    telefono: Joi.string().required().label("Telefono"),
+    direccion: Joi.string().required().label("Direccion"),
+    email: Joi.string().email().required().label("Email"),
+    password: passwordComplexity().required().label("Password"),
+  })
+  return schema.validate(data)
+}
 
 export default model("User", UserSchema);
