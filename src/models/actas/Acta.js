@@ -10,17 +10,21 @@ const ActaSchema = new Schema(
     fechaCreacion: {
       type: Date,
       required: true,
+      default: Date.now,
     },
     lugar: {
       type: String,
       required: true,
     },
     modalidad: {
-      ref: "Modalidad",
-      type: Schema.Types.ObjectId
+      type: String,
+      enum: ["presencial", "virtual", "mixta"],
+      required: true,
     },
     estado: {
       type: String,
+      enum: ["En proceso", "Aprovado"],
+      default: "En proceso",
       required: true,
     },
     horaInicia: {
@@ -49,22 +53,19 @@ const ActaSchema = new Schema(
         type: Schema.Types.ObjectId,
       },
     ],
-    desarrolloActa: [
+    desarrolloActa: {
+      type: [],
+      required: true,
+    },
+    articulos:
       {
-        type: String,
+        type: [],
         required: true,
       },
-    ],
-    votos: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
-    // docsSoporte: [{
-    //   ref: "Documentos",
-    //   type: Schema.Types.ObjectId,
-    // }],
+    docsSoporte: [{
+      ref: "Documentos",
+      type: Schema.Types.ObjectId,
+    }],
   },
   {
     timestamps: true,

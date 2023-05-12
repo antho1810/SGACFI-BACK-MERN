@@ -8,4 +8,9 @@ mongoose.connect(URI, {
   useUnifiedTopology: true
 })
   .then(db => console.log("DB is connected"))
-.catch(err => console.log(err))
+  .catch(err => console.log(err))
+
+
+  import './models/Participantes.js'
+  import './models/User.js'
+  import './models/actas/Acta.js'

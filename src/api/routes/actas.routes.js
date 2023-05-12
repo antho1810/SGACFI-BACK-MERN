@@ -13,14 +13,13 @@ router.post(
   // Verificaciones post
   [
     authJwt.verifyToken,
-    authJwt.isSecretariaOrDecano,
-    checking.checkModalidadExisted,
+    authJwt.isSecretariaOrDecano
   ],
   actasCtrl.createActas
 );
 router.put(
   "/id/:id",
-  [authJwt.verifyToken, authJwt.isSecretaria, checking.checkModalidadExisted],
+  [authJwt.verifyToken, authJwt.isSecretaria],
   actasCtrl.updateActas
 );
 

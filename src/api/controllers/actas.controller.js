@@ -17,51 +17,47 @@ export const getActasById = async (req, res) => {
 export const createActas = async (req, res) => {
   const {
     numeroRef,
-    fechaCreacion,
     lugar,
     modalidad,
-    estado,
     horaInicia,
     horaFinal,
-    // miembrosPresentes,
-    // miembrosAusentes,
-    // miembrosInvitados,
-    // desarrolloActa,
-    // votos,
-    // docsSoporte
+    miembrosPresentes,
+    miembrosAusentes,
+    miembrosInvitados,
+    desarrolloActa,
+    articulos,
+    docsSoporte
   } = req.body;
 
   const newActa = new Acta({
     numeroRef,
-    fechaCreacion,
     lugar,
-    estado,
+    modalidad,
     horaInicia,
     horaFinal,
-    // miembrosPresentes,
-    // miembrosAusentes,
-    // miembrosInvitados,
-    // desarrolloActa,
-    // votos,
-    // docsSoporte
+    miembrosPresentes,
+    miembrosAusentes,
+    miembrosInvitados,
+    desarrolloActa,
+    articulos,
+    docsSoporte
   });
-
-  if (modalidad) {
-    const foundModalidades = await Modalidad.find({
-      nombre: { $in: modalidad },
-    });
-    newActa.modalidad = foundModalidades.map((modalidad) => modalidad._id);
-  } else {
-    return res.status(400).json({ message: "Debe contar con una modalidad" });
-  }
 
   console.log(newActa);
 
-  const actaSaved = await newActa.save();
+  if (modalidad === "mixta" ||
+    modalidad === "virtual" ||
+    modalidad === "presencial") {
+      const actaSaved = await newActa.save();
+      
+      res
+        .status(200)
+        .json({ message: "Acta guardada con éxito", infoActa: actaSaved });
+  } else {
+    res.status(401).json({ message: "Modalidad no existe" });
+  }
 
-  res
-    .status(200)
-    .json({ message: "Acta guardada con éxito", infoActa: actaSaved });
+
 };
 
 // UDDATE ACTAS

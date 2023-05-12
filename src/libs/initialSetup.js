@@ -1,8 +1,5 @@
 import {ROLES} from '../models/Role.js'
 import Role from '../models/Role.js'
-import { MODALIDADES } from '../models/actas/Modalidad.js'
-
-import Modalidad from '../models/actas/Modalidad.js'
 
 export const createRoles = async () => {
   try {
@@ -19,19 +16,3 @@ export const createRoles = async () => {
     console.error(e)
   }
 }
-export const createModalidades = async () => {
-  try {
-    const count = await Modalidad.estimatedDocumentCount(); 
-    
-    if (count > 0) return;
-    const values = await Promise.all([
-      new Modalidad({ nombre: MODALIDADES.presencial }).save(),
-      new Modalidad({ nombre: MODALIDADES.virtual }).save(),
-      new Modalidad({ nombre: MODALIDADES.mixta}).save()
-    ])
-    console.log(values)
-  } catch (e) {
-    console.error(e)
-   }
- }
-
