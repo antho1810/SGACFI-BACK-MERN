@@ -3,7 +3,7 @@ import Modalidad from "../../models/actas/Modalidad.js";
 
 // GET ACTAS
 export const getActas = async (req, res) => {
-  const actas = await Acta.find();
+  const actas = await Acta.find().populate(  "miembrosPresentes" );
   res.json(actas);
 };
 

@@ -37,19 +37,19 @@ const ActaSchema = new Schema(
     },
     miembrosPresentes: [
       {
-        ref: "Participante",
+        ref: "Participantes",
         type: Schema.Types.ObjectId,
       },
     ],
     miembrosAusentes: [
       {
-        ref: "Participante",
+        ref: "Participantes",
         type: Schema.Types.ObjectId,
       },
     ],
     miembrosInvitados: [
       {
-        ref: "Participante",
+        ref: "Participantes",
         type: Schema.Types.ObjectId,
       },
     ],
