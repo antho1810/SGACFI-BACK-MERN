@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 
+import votosRoutes from "./api/routes/votos.routes.js"
 import actasRoutes from "./api/routes/actas.routes.js"
 import authRoutes from "./api/routes/auth.routes.js";
 import usersRoutes from "./api/routes/users.routes.js";
@@ -17,6 +18,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 // ROUTES
+app.use("/sgacfi-api/votos", votosRoutes);
 app.use("/sgacfi-api/actas", actasRoutes);
 app.use("/sgacfi-api/auth", authRoutes);
 app.use("/sgacfi-api/usuarios", usersRoutes);
