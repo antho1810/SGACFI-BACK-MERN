@@ -53,14 +53,20 @@ const ActaSchema = new Schema(
         type: Schema.Types.ObjectId,
       },
     ],
-    desarrolloActa: {
-      type: [],
-      required: true,
+    cronograma: [{
+    HORA:{
+      type: String,
+       required: true
     },
+      ACTIVIDAD: {
+        type: String,
+        required: true
+    }
+    }],
     articulos:
       {
         type: [],
-        required: true,
+      required: true
       },
     docsSoporte: [{
       ref: "Documentos",
