@@ -5,13 +5,16 @@ import Modalidad from "../../models/actas/Modalidad.js";
 export const getActas = async (req, res) => {
   const actas = await Acta.find().populate("miembrosPresentes")
     .populate("miembrosAusentes")
-    .populate("miembrosInvitados");;
+    .populate("miembrosInvitados");
   res.json(actas);
 };
 
 // GET ACTAS BY ID
 export const getActasById = async (req, res) => {
-  const acta = await Acta.findById(req.params.id);
+  const acta = await Acta.findById(req.params.id)
+    .populate("miembrosPresentes")
+    .populate("miembrosAusentes")
+    .populate("miembrosInvitados");
   res.status(200).json(acta);
 };
 
@@ -50,11 +53,11 @@ export const createActas = async (req, res) => {
   if (modalidad === "mixta" ||
     modalidad === "virtual" ||
     modalidad === "presencial") {
-      const actaSaved = await newActa.save();
-      
-      res
-        .status(200)
-        .json({ message: "Acta guardada con éxito", infoActa: actaSaved });
+    const actaSaved = await newActa.save();
+
+    res
+      .status(200)
+      .json({ message: "Acta guardada con éxito", infoActa: actaSaved });
   } else {
     res.status(401).json({ message: "Modalidad no existe" });
   }
@@ -73,10 +76,10 @@ export const updateActas = async (req, res) => {
 
 // UPDATE STATUS ACTA
 export const updateStatusActa = async (req, res) => {
-  const foundedActa = await Acta.findByIdAndUpdate(req.params.id, req.body,{new: true});
+  const foundedActa = await Acta.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
-  res.status(200).json({message: "Acta autorizada"})
- }
+  res.status(200).json({ message: "Acta autorizada" })
+}
 
 // DELETE ACTAS
 export const deleteActas = async (req, res) => {
