@@ -1,10 +1,11 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 
 const ActaSchema = new Schema(
   {
     numeroRef: {
       type: Number,
-      required: true,
+      // required: true,
+      index: true,
       unique: true,
     },
     fechaCreacion: {
@@ -23,7 +24,7 @@ const ActaSchema = new Schema(
     },
     estado: {
       type: String,
-      enum: ["En proceso", "Aprovado"],
+      enum: ["En proceso", "Aprovado", "Desaprobado"],
       default: "En proceso",
       required: true,
     },
@@ -54,14 +55,15 @@ const ActaSchema = new Schema(
       },
     ],
     cronograma: [{
-      HORA: {
-        type: String,
-        required: true
-      },
-      ACTIVIDAD: {
-        type: String,
-        required: true
-      }
+      type: Object, required: true
+      // HORA: {
+      //   type: String,
+      //   required: true
+      // },
+      // ACTIVIDAD: {
+      //   type: String,
+      //   required: true
+      // }
     }],
     articulos:
     {
@@ -69,8 +71,11 @@ const ActaSchema = new Schema(
       required: true
     },
     docsSoporte: [{
-      ref: "documentosActa",
-      type: Schema.Types.ObjectId,
+      nombre: {type: String, required: true},
+      archivo: {type: Buffer, required: true},
+      contentType: {type: String, required: true}
+      // ref: "documentosActa",
+      // type: Schema.Types.ObjectId,
     }],
   },
   {
@@ -79,4 +84,19 @@ const ActaSchema = new Schema(
   }
 );
 
-export default model("Acta", ActaSchema);
+ActaSchema.pre('save', async function (next) {
+  const doc = this;
+  if (!doc.numeroRef) {
+    const lastDoc = await doc.constructor.findOne(
+      {},
+      {},
+      { sort: { numeroRef: -1 } }
+    );
+    doc.numeroRef = lastDoc ? lastDoc.numeroRef + 1 : 1;
+  }
+  next();
+});
+
+const Acta = mongoose.model("Acta", ActaSchema);
+
+export default Acta

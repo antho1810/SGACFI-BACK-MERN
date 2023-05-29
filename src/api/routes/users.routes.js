@@ -3,6 +3,9 @@ const router = Router()
 
 import * as userCtrl from '../controllers/users.controllers.js'
 
-router.route("/").get(userCtrl.getUsers)
+import * as auth from '../../middlewares/authJwt.js'
+
+router.route("/", auth.checkAuth, auth.isSecretariaOrDecano, userCtrl.getUsers)
+  // .get(userCtrl.getUsers)
 
 export default router;

@@ -2,25 +2,25 @@ import { Router } from "express";
 const router = Router();
 
 import * as participanteCtrl from "../controllers/participante.controller.js";
-import { authJwt } from "../../middlewares/index.js";
+import * as auth from "../../middlewares/index.js";
 
 router
   .route("/")
-  .get([authJwt.verifyToken], participanteCtrl.getParticipantes)
+  .get([authJwt.checkAuth], participanteCtrl.getParticipantes)
   .post(
-    [authJwt.verifyToken, authJwt.isSecretariaOrDecano],
+    [authJwt.checkAuth, authJwt.isSecretariaOrDecano],
     participanteCtrl.createParticipante
   );
 
 router
   .route("/id/:id")
-  .get([authJwt.verifyToken], participanteCtrl.getParticipantesById)
+  .get([authJwt.checkAuth], participanteCtrl.getParticipantesById)
   .put(
-    [authJwt.verifyToken, authJwt.isSecretariaOrDecano],
+    [authJwt.checkAuth, authJwt.isSecretariaOrDecano],
     participanteCtrl.updateParticipanteById
   )
   .delete(
-    [authJwt.verifyToken, authJwt.isSecretariaOrDecano],
+    [authJwt.checkAuth, authJwt.isSecretariaOrDecano],
     participanteCtrl.deleteParticipanteById
   );
 

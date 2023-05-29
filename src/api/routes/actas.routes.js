@@ -2,36 +2,39 @@ import { Router } from "express";
 const router = Router();
 
 import * as actasCtrl from "../controllers/actas.controller.js";
-import { authJwt, checking } from "../../middlewares/index.js";
+import * as authJwt from "../../middlewares/index.js";
 
 // ACTAS ROUTES CRUD
 
-router.get("/", [authJwt.verifyToken], actasCtrl.getActas);
-router.get("/id/:id", [authJwt.verifyToken], actasCtrl.getActasById);
+router.get("/",
+  // [authJwt.verifyToken],
+  [authJwt.checkAuth],
+  actasCtrl.getActas);
+router.get("/referencia/:numeroRef", [authJwt.checkAuth], actasCtrl.getActasById);
 router.post(
   "/",
   // Verificaciones post
   [
-    authJwt.verifyToken,
+    authJwt.checkAuth,
     authJwt.isSecretariaOrDecano
   ],
   actasCtrl.createActas
 );
 router.put(
-  "/id/:id",
-  [authJwt.verifyToken, authJwt.isSecretaria],
+  "/referencia/:numeroRef",
+  [authJwt.checkAuth, authJwt.isSecretariaOrDecano],
   actasCtrl.updateActas
 );
 
 router.put(
-  "/autorize/id/:id",
+  "/autorize/referencia/:numeroRef",
   // Cambiar el authJwt.isSecretariaOrDecano a authJwt.isDecano
-  [authJwt.verifyToken, authJwt.isSecretariaOrDecano],
+  [authJwt.checkAuth, authJwt.isDecano],
   actasCtrl.updateStatusActa
 );
 router.delete(
   "/id/:id",
-  [authJwt.verifyToken, authJwt.isSecretaria],
+  [authJwt.checkAuth, authJwt.isSecretariaOrDecano],
   actasCtrl.deleteActas
 );
 

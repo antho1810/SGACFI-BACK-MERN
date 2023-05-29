@@ -2,6 +2,8 @@ import User, { validate } from "../../models/User.js";
 import Role from "../../models/Role.js";
 import config from "../../config.js";
 
+import { tokenSign } from "../../middlewares/generateToken.js";
+
 import Joi from 'joi'
 
 import jwt from "jsonwebtoken";
@@ -48,13 +50,14 @@ export const signUp = async (req, res) => {
   }
 
   const savedUser = await newUser.save();
+  const tokenSession = await tokenSign(newUser)
+  res.status(200).json({message: savedUser, token: tokenSession });
 
-  const token = jwt.sign({ id: savedUser._id }, config.SECRET, {
-    expiresIn: "7D",
+  // const token = jwt.sign({ id: savedUser._id }, config.SECRET, {
+  //   expiresIn: "7D",
     //expiresIn: 86400,  24h
-  });
+  // });
 
-  res.status(200).json({ token });
 };
 
 export const signIn = async (req, res) => {
@@ -70,7 +73,7 @@ export const signIn = async (req, res) => {
     );
 
     if (!userFound) {
-      return res.status(400).json({ message: "Email no es correcto" });
+      return res.status(400).json({ message: "Credenciales no es correcto" });
     }
 
     const passwordFound = await User.comparePassword(
@@ -79,16 +82,20 @@ export const signIn = async (req, res) => {
     );
 
     if (!passwordFound) {
-      return res.status(400).json({ message: "Contraseña no es correcta" });
+      return res.status(400).json({ message: "Credenciales no es correcta" });
     }
 
-      const token = jwt.sign({ _id: userFound._id }, config.SECRET, {
-        expiresIn: "7D"
+    const tokenSession = await tokenSign(userFound);
+    console.log(tokenSession);
+    res.status(201).send({data: token, message: "Ingreso éxitoso" });
+
+
+      // const token = jwt.sign({ _id: userFound._id }, config.SECRET, {
+      //   expiresIn: "7D"
       // expiresIn: 86400, 24h
       // expiresIn: "1m"
-    });
+    // });
 
-     res.status(201).send({data: token, message: "Ingreso éxitoso" });
   } catch (e) {
       res.send({message: "Internal server error"})
   }

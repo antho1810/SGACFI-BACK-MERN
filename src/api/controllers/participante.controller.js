@@ -38,7 +38,7 @@ export const updateParticipanteById = async (req, res) => {
     }
   );
   res.status(200).json({
-    message: "el Participante fue actualizado con éxito",
+    message: "El participante fue actualizado con éxito",
     infoParticipante: updatedParticipante,
   });
 };
