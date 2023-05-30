@@ -1,7 +1,7 @@
 {
-  "name": "sgacfi-mern-definitivo",
+  "name": "sgacfi-back-mern",
   "version": "1.0.0",
-  "description": "Este es una plataforma de gestión de actas de una institución",
+  "description": "Este es una plataforma de gestión de actas para Facultad de Ingeniería",
   "main": "index.js",
   "scripts": {
     "build": "babel src --out-dir build",
@@ -9,7 +9,7 @@
     "dev": "nodemon src/index.js --exec babel-node"
   },
   "keywords": [],
-  "author": "Jeison",
+  "author": "Anthony Romero",
   "license": "ISC",
   "type": "module",
   "dependencies": {
