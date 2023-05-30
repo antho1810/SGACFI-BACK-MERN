@@ -14,10 +14,10 @@ app.use(morgan('dev'));
 app.use(express.json());
 
 // ROUTES
-app.use('/api/actas', actasRoutes)
-app.use('/api/auth', authRoutes)
-app.use('/api/usuarios', usersRoutes)
-app.use('/api/participantes', participantesRoutes)
+app.use('/sgacfi-api/actas', actasRoutes)
+app.use('/sgacfi-api/auth', authRoutes)
+app.use('/sgacfi-api/usuarios', usersRoutes)
+app.use('/sgacfi-api/participantes', participantesRoutes)
 
 // Manejo de errores
 app.use((err, req, res, next) => {
