@@ -36,7 +36,7 @@ const UserSchema = new Schema({
         unique: true,
         required: true
     },
-    contrasena: {
+    password: {
         type: String,
         required: true
     }
@@ -64,7 +64,7 @@ export const validate = (data) => {
         telefono: Joi.string().required().label("Telefono"),
         direccion: Joi.string().required().label("Direccion"),
         email: Joi.string().email().required().label("Email"),
-        contrasena: passwordComplexity().required().label("Contraseña"),
+        password: passwordComplexity().required().label("Contraseña"),
     })
     return schema.validate(data)
 }
