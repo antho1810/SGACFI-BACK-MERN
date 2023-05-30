@@ -1,88 +1,47 @@
-import mongoose, { Schema, model } from "mongoose";
+import mongoose from 'mongoose';
 
-const ActaSchema = new Schema(
-  {
-    numeroRef: {
-      type: Number,
-      // required: true,
-      index: true,
-      unique: true,
-    },
-    fechaCreacion: {
-      type: Date,
-      required: true,
-      default: Date.now,
-    },
-    lugar: {
-      type: String,
-      required: true,
-    },
-    modalidad: {
-      type: String,
-      enum: ["presencial", "virtual", "mixta"],
-      required: true,
-    },
-    estado: {
-      type: String,
-      enum: ["En proceso", "Aprovado", "Desaprobado"],
-      default: "En proceso",
-      required: true,
-    },
-    horaInicia: {
-      type: String,
-      required: true,
-    },
-    horaFinal: {
-      type: String,
-      required: true,
-    },
-    miembrosPresentes: [
-      {
-        ref: "Participantes",
-        type: Schema.Types.ObjectId,
-      },
-    ],
-    miembrosAusentes: [
-      {
-        ref: "Participantes",
-        type: Schema.Types.ObjectId,
-      },
-    ],
-    miembrosInvitados: [
-      {
-        ref: "Participantes",
-        type: Schema.Types.ObjectId,
-      },
-    ],
-    cronograma: [{
-      type: Object, required: true
-      // HORA: {
-      //   type: String,
-      //   required: true
-      // },
-      // ACTIVIDAD: {
-      //   type: String,
-      //   required: true
-      // }
-    }],
-    articulos:
-    {
-      type: [],
-      required: true
-    },
-    docsSoporte: [{
-      nombre: {type: String, required: true},
-      archivo: {type: Buffer, required: true},
-      contentType: {type: String, required: true}
-      // ref: "documentosActa",
-      // type: Schema.Types.ObjectId,
-    }],
+const { Schema } = mongoose;
+
+const ActaSchema = new Schema({
+  numeroRef: { type: Number, unique: true, index: true },
+  fechaCreacion: { type: Date, default: Date.now, required: true },
+  lugar: { type: String, required: true },
+  modalidad: {
+    type: String,
+    enum: ['presencial', 'virtual', 'mixta'],
+    required: true
   },
-  {
+  horaInicio: { type: String, required: true },
+  horaFinal: { type: String, required: true },
+  estado: {
+    type: String,
+    enum: ['En proceso', 'Aprobado', 'Desaprobado'],
+    default: 'En proceso',
+    required: true
+  },
+  cronograma: [{ type: Object, required: true }],
+  miembrosPresentes: [
+    { type: Schema.Types.ObjectId, ref: 'Participante' } // [{_id: xxxxx},{...}]
+  ],
+  miembrosInvitados: [
+    { type: Schema.Types.ObjectId, ref: 'Participante' }
+  ],
+  miembrosAusentes: [
+    { type: Schema.Types.ObjectId, ref: 'Participante' }
+  ],
+  documentosSoporte: [
+    {
+      nombre: { type: String, required: true },
+      archivo: { type: Buffer, required: true },
+      contentType: { type: String, required: true }
+    }
+  ],
+  articulos: { type: [], required: true }
+},
+{
     timestamps: true,
-    versionKey: false,
-  }
-);
+    versionKey: false
+});
 
 ActaSchema.pre('save', async function (next) {
   const doc = this;
@@ -97,6 +56,6 @@ ActaSchema.pre('save', async function (next) {
   next();
 });
 
-const Acta = mongoose.model("Acta", ActaSchema);
+const Acta = mongoose.model('Acta', ActaSchema);
 
-export default Acta
+export default Acta;

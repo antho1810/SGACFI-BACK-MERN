@@ -1,5 +1,5 @@
 const config = {
-  SECRET: "sgacfi-api",
-};
+    SECRET: 'sgacfi-api'
+}
 
 export default config;

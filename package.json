@@ -1,7 +1,7 @@
 {
-  "name": "sgacfi-back-mern",
+  "name": "sgacfi-mern-definitivo",
   "version": "1.0.0",
-  "description": "Este es un servidor de gestion de actas",
+  "description": "Este es una plataforma de gestión de actas de una institución",
   "main": "index.js",
   "scripts": {
     "build": "babel src --out-dir build",
@@ -9,7 +9,7 @@
     "dev": "nodemon src/index.js --exec babel-node"
   },
   "keywords": [],
-  "author": "Anthony Romero",
+  "author": "Jeison",
   "license": "ISC",
   "type": "module",
   "dependencies": {
@@ -20,6 +20,7 @@
     "joi-password-complexity": "^5.1.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.1.0",
+    "mongoose-auto-increment": "^5.0.1",
     "morgan": "^1.10.0"
   },
   "devDependencies": {

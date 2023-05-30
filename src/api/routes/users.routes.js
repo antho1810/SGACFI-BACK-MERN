@@ -5,7 +5,6 @@ import * as userCtrl from '../controllers/users.controllers.js'
 
 import * as auth from '../../middlewares/authJwt.js'
 
-router.route("/", auth.checkAuth, auth.isSecretariaOrDecano, userCtrl.getUsers)
-  // .get(userCtrl.getUsers)
+router.get('/', auth.checkAuth, auth.isSecretariaOrDecano, userCtrl.getUsers)
 
 export default router;

@@ -1,11 +1,11 @@
-import Acta from "../../models/Acta.js";
-// import Modalidad from "../../models/actas/Modalidad.js";
+import Acta from '../../models/Acta.js';
 
 // GET ACTAS
 export const getActas = async (req, res) => {
-  const actas = await Acta.find().populate("miembrosPresentes")
-    .populate("miembrosAusentes")
-    .populate("miembrosInvitados");
+  const actas = await Acta.find()
+    .populate('miembrosPresentes')
+    .populate('miembrosAusentes')
+    .populate('miembrosInvitados');
   res.json(actas);
 };
 
@@ -15,90 +15,95 @@ export const createActas = async (req, res) => {
     numeroRef,
     lugar,
     modalidad,
-    horaInicia,
+    horaInicio,
     horaFinal,
     miembrosPresentes,
     miembrosAusentes,
     miembrosInvitados,
     cronograma,
     articulos,
-    docsSoporte
+    docsSoporte,
   } = req.body;
 
   const newActa = new Acta({
     numeroRef,
     lugar,
     modalidad,
-    horaInicia,
+    horaInicio,
     horaFinal,
     miembrosPresentes,
     miembrosAusentes,
     miembrosInvitados,
     cronograma,
     articulos,
-    docsSoporte
+    docsSoporte,
   });
 
   console.log(newActa);
 
-  if (modalidad === "mixta" ||
-    modalidad === "virtual" ||
-    modalidad === "presencial") {
+  if (
+    modalidad === 'mixta' ||
+    modalidad === 'virtual' ||
+    modalidad === 'presencial'
+  ) {
     const actaSaved = await newActa.save();
-
     res
       .status(200)
-      .json({ message: "Acta guardada con éxito", infoActa: actaSaved });
+      .json({ message: 'Acta guardada con éxito', infoActa: actaSaved });
   } else {
-    res.status(401).json({ message: "Modalidad no existe" });
+    return res.status(401).json({ message: 'modalidad no existe' });
   }
-
-
 };
 
-// GET ACTAS BY ID
-// export const getActasById = async (req, res) => {
-//   const acta = await Acta.findById(req.params.id)
-//     .populate("miembrosPresentes")
-//     .populate("miembrosAusentes")
-//     .populate("miembrosInvitados");
-//   res.status(200).json(acta);
-// };
-
-// GET ACTAS BY NumeroREF
-export const getActasByRef = async (req, res) => {
+// Obtener los detalles de una acta específica por número de referencia
+export const getActaByRef = async (req, res, next) => {
   try {
     const { numeroRef } = req.params;
-
     const acta = await Acta.findOne({ numeroRef })
-      .populate("miembrosPresentes")
-      .populate("miembrosAusentes")
-      .populate("miembrosInvitados");
+      .populate('miembrosPresentes')
+      .populate('miembrosAusentes')
+      .populate('miembrosInvitados');
     if (!acta) {
-      res.status(404).json({ error: "Acta no encontrada" });
+      res.status(404).json({ error: 'Acta no encontrada' });
     } else {
       res.json(acta);
     }
-    res.status(200).json(acta);
   } catch (error) {
     next(error);
   }
 };
 
-// UDDATE ACTAS
-export const updateActaByRef = async (req, res) => {
+// Actualizar una acta
+export const updateActaByRef = async (req, res, next) => {
   try {
-    const { numeroRef } = req.params
+    const { numeroRef } = req.params;
 
-    const updatedActa = await Acta.findOneAndUpdate({ numeroRef }, req.body, {
-      new: true,
-    });
-
-    if (!updateActa) {
-      res.status(404).json({ error: "Acta no encontrada" });
+    const actaActualizada = await Acta.findOneAndUpdate(
+      { numeroRef },
+      req.body,
+      {
+        new: true,
+      }
+    );
+    if (!actaActualizada) {
+      res.status(404).json({ error: 'Acta no encontrada' });
     } else {
-      res.json(updatedActa);
-      res.status(200).json({ message: "Acta actualizada con exito" });
+      res.json(actaActualizada);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Eliminar una acta
+export const deleteActaByRef = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const actaEliminada = await Acta.findByIdAndDelete(id);
+    if (!actaEliminada) {
+      res.status(404).json({ error: 'Acta no encontrada' });
+    } else {
+      res.json({ message: 'Acta eliminada correctamente' });
     }
   } catch (error) {
     next(error);
@@ -107,29 +112,10 @@ export const updateActaByRef = async (req, res) => {
 
 // UPDATE STATUS ACTA
 export const updateStatusActa = async (req, res) => {
+  const { numeroRef } = req.params
+  const foundedActa = await Acta.findOneAndUpdate({ numeroRef }, req.body, {
+    new: true,
+  });
 
-  const { numeroRef } = req.params;
-  const foundedActa = await Acta.findOneAndUpdate({ numroRef }, req.body, { new: true });
-
-  res.status(200).json({ message: "Acta autorizada" })
-}
-
-// DELETE ACTAS
-export const deleteActas = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deleteActa = await Acta.findByIdAndDelete(id);
-    if (!deleteActa) {
-      res.status(404).json({ error: "Acta no encontrada" });
-    } else {
-
-      res.status(204).json({ message: "Acta eliminada con exito" });
-    }
-
-  } catch (error) {
-    next(error)
-  }
-
+  res.status(200).json({ message: 'Acta autorizada' });
 };
-
-

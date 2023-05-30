@@ -1,27 +1,27 @@
-import { Router } from "express";
+import { Router } from 'express';
 const router = Router();
 
-import * as participanteCtrl from "../controllers/participante.controller.js";
-import * as auth from "../../middlewares/index.js";
+import * as participanteCtrl from '../controllers/participante.controller.js';
+import * as auth from '../../middlewares/authJwt.js';
 
 router
-  .route("/")
-  .get([authJwt.checkAuth], participanteCtrl.getParticipantes)
+  .route('/')
+  .get([auth.checkAuth], participanteCtrl.getParticipantes)
   .post(
-    [authJwt.checkAuth, authJwt.isSecretariaOrDecano],
+    [auth.checkAuth, auth.isSecretariaOrDecano],
     participanteCtrl.createParticipante
   );
 
 router
-  .route("/id/:id")
-  .get([authJwt.checkAuth], participanteCtrl.getParticipantesById)
+  .route('/id/:id')
+  .get([auth.checkAuth], participanteCtrl.getParticipanteById)
   .put(
-    [authJwt.checkAuth, authJwt.isSecretariaOrDecano],
+    [auth.checkAuth, auth.isSecretariaOrDecano],
     participanteCtrl.updateParticipanteById
   )
   .delete(
-    [authJwt.checkAuth, authJwt.isSecretariaOrDecano],
+    [auth.checkAuth, auth.isSecretariaOrDecano],
     participanteCtrl.deleteParticipanteById
   );
 
-  export default router 
+export default router;

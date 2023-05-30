@@ -11,7 +11,7 @@ export const tokenSign = async (user) => {
       rol: user.rol,
     },
     config.SECRET,
-    { expiresIn: '2h' }
+    { expiresIn: '7D' }
   );
   console.log(newToken);
   return newToken;
