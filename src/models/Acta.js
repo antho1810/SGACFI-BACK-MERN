@@ -19,7 +19,7 @@ const ActaSchema = new Schema({
     default: 'En proceso',
     required: true
   },
-  cronograma: [ type: Object, required: true ],
+  cronograma: { type: Object, required: true },
   miembrosPresentes: [
     { type: Schema.Types.ObjectId, ref: 'Participante' } // [{_id: xxxxx},{...}]
   ],
