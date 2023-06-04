@@ -1,15 +1,15 @@
-import { ROLES } from '../models/Role.js'
-import Role from '../models/Role.js'
+import { ROLES } from '../models/Rol.js'
+import Rol from '../models/Rol.js'
 
 export const createRoles = async () => {
   try {
-    const count = await Role.estimatedDocumentCount();
+    const count = await Rol.estimatedDocumentCount();
 
     if (count > 0) return;
     const values = await Promise.all([
-      new Role({ nombre: ROLES.decano }).save(),
-      new Role({ nombre: ROLES.secretaria }).save(),
-      new Role({ nombre: ROLES.participante }).save(),
+      new Rol({ nombre: ROLES.decano }).save(),
+      new Rol({ nombre: ROLES.secretaria }).save(),
+      new Rol({ nombre: ROLES.participante }).save(),
     ])
     console.log(values)
   } catch (e) {

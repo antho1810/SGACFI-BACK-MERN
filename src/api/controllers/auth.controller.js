@@ -40,7 +40,7 @@ export const signUp = async (req, res) => {
     })
     if (rol) {
         const foundRoles = await Rol.find({ nombre: { $in: rol } })
-        newUser.rol = foundRoles.map(role => role._id)
+        newUser.rol = foundRoles.map(rol => rol._id)
     } else {
         const defaultRol = await Rol.findOne({ nombre: "participante" })
         newUser.rol = [defaultRol._id]
