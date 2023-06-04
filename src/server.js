@@ -7,7 +7,10 @@ import authRoutes from './api/routes/auth.routes.js'
 import usersRoutes from './api/routes/users.routes.js'
 import participantesRoutes from './api/routes/participante.routes.js'
 
+import { createRoles } from "./libs/initialSetup.js";
+
 const app = express()
+createRoles();
 
 app.use(cors());
 app.use(morgan('dev'));
