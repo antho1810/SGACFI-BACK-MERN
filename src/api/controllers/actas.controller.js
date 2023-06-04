@@ -119,3 +119,12 @@ export const updateStatusActa = async (req, res) => {
 
   res.status(200).json({ message: 'Acta autorizada' });
 };
+
+export const updateStatusIdActa = async (req, res) => {
+  const { id } = req.params
+  const foundedActa = await Acta.findByIdAndUpdate(id, req.body, {
+    new: true,
+  });
+
+  res.status(200).json({ message: 'Acta autorizada' });
+};
