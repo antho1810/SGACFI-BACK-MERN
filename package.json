@@ -1,7 +1,7 @@
 {
   "name": "sgacfi-back-mern",
   "version": "1.0.0",
-  "description": "Este es una plataforma de gestión de actas para Facultad de Ingeniería",
+  "description": "Este es una plataforma de gestión de actas de una institución",
   "main": "index.js",
   "scripts": {
     "build": "babel src --out-dir build",
