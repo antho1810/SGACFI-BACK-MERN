@@ -6,6 +6,7 @@ import actasRoutes from './api/routes/actas.routes.js'
 import authRoutes from './api/routes/auth.routes.js'
 import usersRoutes from './api/routes/users.routes.js'
 import participantesRoutes from './api/routes/participante.routes.js'
+import mailsRoutes from './api/routes/mails.routes.js'
 
 const app = express()
 
@@ -18,6 +19,7 @@ app.use('/sgacfi-api/actas', actasRoutes)
 app.use('/sgacfi-api/auth', authRoutes)
 app.use('/sgacfi-api/usuarios', usersRoutes)
 app.use('/sgacfi-api/participantes', participantesRoutes)
+app.use('7sgacfi-api/services/mails', mailsRoutes)
 
 // Manejo de errores
 app.use((err, req, res, next) => {
