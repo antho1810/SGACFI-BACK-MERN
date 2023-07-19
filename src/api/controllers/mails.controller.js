@@ -8,7 +8,7 @@ const user = "sistemagestiondeactasparafi@gmail.com";
 const pass = "lrzpwvszrppqwrql";
 
 // RUTA OBSOLETA - SOLO DE EJEMPLO PARA EL ENVIO DE UN CORREO SIMPLE
-export const sendEMail = async (req, res) => {
+export const sendEmail = async (req, res) => {
   const { name, to, subject, bodyEmail } = req.body;
   const toArr = to.split(",");
   const transporter = nodemailer.createTransport({

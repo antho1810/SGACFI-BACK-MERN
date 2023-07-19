@@ -6,7 +6,7 @@ import * as auth from "../../middlewares/authJwt.js";
 
 router
   .route("/send")
-  .post([auth.checkAuth, auth.isSecretariaOrDecano], mailsCtrl.sendEMail);
+  .post([auth.checkAuth, auth.isSecretariaOrDecano], mailsCtrl.sendEmail);
 
 router.route("/send-pdf").post(mailsCtrl.sendEmailPdf);
 
