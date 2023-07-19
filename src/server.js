@@ -19,7 +19,7 @@ app.use('/sgacfi-api/actas', actasRoutes)
 app.use('/sgacfi-api/auth', authRoutes)
 app.use('/sgacfi-api/usuarios', usersRoutes)
 app.use('/sgacfi-api/participantes', participantesRoutes)
-app.use('7sgacfi-api/services/mails', mailsRoutes)
+app.use('/sgacfi-api/services/mails', mailsRoutes)
 
 // Manejo de errores
 app.use((err, req, res, next) => {
