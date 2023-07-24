@@ -8,6 +8,6 @@ router
   .route("/send")
   .post([auth.checkAuth, auth.isSecretariaOrDecano], mailsCtrl.sendEmail);
 
-router.route("/send-pdf").post(mailsCtrl.sendEmailPdf);
+router.route("/send-pdf").post([auth.checkAuth, auth.isSecretariaOrDecano], mailsCtrl.sendEmailPdf);
 
 export default router;
