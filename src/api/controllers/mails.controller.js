@@ -72,13 +72,61 @@ export const sendEmailPdf = async (req, res) => {
   const doc = new jsPDF();
 
   // ESCRIBE PRIMERA LINEA, ESTABLECE TAMAÑO DE FUENTE, COLOR, CONTENIDO Y POSICIÓN
-  doc.setFontSize(32);
-  doc.setTextColor(18, 47, 117);
-  doc.text(`Número de Referencia: ${numeroRef}`, 5, 20);
+ doc.setFontSize(18);
+ doc.text(actaData ? actaData.TITULO : "...", 50, 10, { fontWeight: 'bold' });
+ doc.setFontSize(12);
+ doc.text(actaData ? actaData.SUBTITULO : "...", 95, 15);
+ doc.setFontSize(12);
+ doc.text(
+   actaData
+     ? `${actaData.REFERENCIA.acuerdo} - ${numeroRef} - ${actaData.REFERENCIA.anno}`
+     : "...",
+   90,
+   25
+ );
+ doc.text(moment(fechaCreacion).format(`D [de] MMMM [de] YYYY`), 90, 30);
 
-  doc.setFontSize(24);
-  doc.setTextColor(100);
-  doc.text(`Lugar del acta: ${lugar}`, 5, 40);
+ // doc.setFontSize(12);
+ // doc.text(
+ //   `${actaData.PROLOGO.descAntesDeLaFecha} ${actaData.NOMBRE_INSTITUCION},
+ //   reunidos el ${fechaCreacionPrologoFormat} en el ${lugar}, ${actaData.PROLOGO.desDespuesFecha},
+ //   sesionó de ${horaInicioFormat} - ${horaFinalFormat}, ${actaData.PROLOGO.desFinal}`,
+ //   10,
+ //   40
+ // );
+ const contenidoTexto = `${actaData.PROLOGO.descAntesDeLaFecha} ${actaData.NOMBRE_INSTITUCION}, 
+reunidos el ${fechaCreacionPrologoFormat} en el ${lugar}, ${actaData.PROLOGO.desDespuesFecha}, 
+sesionó de ${horaInicioFormat} - ${horaFinalFormat}, ${actaData.PROLOGO.desFinal}`;
+
+ // Dividir el contenido en líneas
+ const lines = doc.splitTextToSize(
+   contenidoTexto,
+   doc.internal.pageSize.getWidth() - 20
+ );
+
+ // Agregar las líneas de texto
+ doc.text(lines, 10, 40);
+
+ doc.setFontSize(12);
+ doc.text("Miembros Presentes:", 10, 70, { fontWeight: 'bold' });
+ // doc.text(miembrosPresentes, 20, 70);
+ doc.setFontSize(12);
+ doc.text("Miembros Ausentes:", 10, 80, { fontWeight: 'bold' });
+ // doc.text(miembrosPresentes, 20, 70);
+ doc.setFontSize(12);
+ doc.text("Miembros Invitados:", 10, 90, { fontWeight: 'bold' });
+ // doc.text(miembrosPresentes, 20, 70);
+
+ doc.setFontSize(12);
+  doc.text("DESARROLLO DEL ORDEN DEL DIA", 50, 100, { fontWeight: 'bold' });
+  
+  doc.setFontSize(12);
+  doc.text(`________________________`, 30, 250);
+  doc.text(`${actaData.FIRMAS.JFNM.nombre}`, 30, 255);
+  doc.text(`${actaData.FIRMAS.JFNM.cargo}`, 30, 260);
+  doc.text(`________________________`, 100, 250);
+  doc.text(`${actaData.FIRMAS.OJD.nombre}`, 100, 255);
+  doc.text(`${actaData.FIRMAS.OJD.cargo}`, 100, 260);
 
   // GUARDA EL PDF EN LA CARPETA TEMPORAL
   doc.save(`src/temp/acta_ref_${numeroRef}.pdf`);
@@ -104,8 +152,16 @@ export const sendEmailPdf = async (req, res) => {
     text: bodyEmail,
     html: `
       <h1>Correo enviado desde nodemailer para ${to}</h1>
-      <h3>Se lo mandó la persona: ${name}</h3>
       <p>${bodyEmail}</p>
+      <span style="color: #908890;font-size: 16px; font-weight: bold;">
+      NOTA: Favor no responder a este mensaje, debido a que es un correo de divulgación, 
+      cualquier inquietud o duda que tenga envíela al correo de la persona o departamento al que se hace mención.
+      </span>
+
+    <div style="background-color: #ffffff; padding: 20px;">
+        <p style="color: #333;">Gracias por su atención.</p>
+        <p style="color: #333;">Saludos cordiales, ${name}</p>
+    </div>
   `,
     // DOCUMENTO ADJUNTO UBICADO EN root/src/temp/acta_ref_?.pdf
     attachments: [
