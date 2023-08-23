@@ -2,6 +2,13 @@ import nodemailer from "nodemailer";
 import { jsPDF } from "jspdf";
 import path from "path";
 import bodyReq from "../../config/http-common.js";
+import {actaData} from "../../libs/acta.js";
+// import LogoUNAC from "../../../src/img/logo-unac.png"
+import moment from "moment";
+
+// Cambiar los valores de user y pass (Borrar al momento de que las pruebas sean exitosas con las nuevas credenciales. 
+// const user = "sistemagestiondeactasparafi@gmail.com";
+// const pass = "lrzpwvszrppqwrql";
 
 // Cambiar los valores de user y pass
 const user = "actasconsejofi@unac.edu.co";
@@ -55,7 +62,19 @@ export const sendEmailPdf = async (req, res) => {
   const response = await httpCommon.get(`actas/referencia/${ref}`);
 
   // POR MEDIO DE LA DESESTRUCTURACIÓN, PUEDES OBTENER LOS DATOS INDIVIDUALES DE LA ACTA
-  const { numeroRef, lugar, modalidad, miembrosPresentes } = response.data;
+  const {
+    numeroRef,
+    lugar,
+    modalidad,
+    miembrosPresentes,
+    miembrosInvitados,
+    miembrosAusentes,
+    cronograma,
+    horaInicio,
+    horaFinal,
+    fechaCreacion,
+    articulos,
+  } = response.data;
 
   // ESTAS IMPRESIONES DE CONSOLA SON OPCIONALES, PERO NECESARIAS PARA LA COMPRENSIÓN DEL FUNCIONAMIENTO DEL CONTROLADOR
   console.log(numeroRef, lugar, modalidad);
@@ -68,58 +87,85 @@ export const sendEmailPdf = async (req, res) => {
     );
   });
 
+  moment.locale("es");
+  const horaInicioFormat = moment(horaInicio).format("h:mm a");
+  const horaFinalFormat = moment(horaFinal).format("h:mm a");
+  const fechaCreacionPrologoFormat = moment(fechaCreacion).format(
+    `dddd DD [de] MMMM [de] YYYY`
+  );
+
+  const lugarTexto =
+    acta.lugar === "LDS"
+      ? "Laboratorio de sistemas (LDS)"
+      : acta.lugar === "LADSIF"
+      ? "Laboratorio de análisis de datos e investigación (LADSIF)"
+      : acta
+      ? acta.lugar
+      : "...";
+
   // GENERAR PDF Y ENVIARLO
   const doc = new jsPDF();
 
   // ESCRIBE PRIMERA LINEA, ESTABLECE TAMAÑO DE FUENTE, COLOR, CONTENIDO Y POSICIÓN
- doc.setFontSize(18);
- doc.text(actaData ? actaData.TITULO : "...", 50, 10, { fontWeight: 'bold' });
- doc.setFontSize(12);
- doc.text(actaData ? actaData.SUBTITULO : "...", 95, 15);
- doc.setFontSize(12);
- doc.text(
-   actaData
-     ? `${actaData.REFERENCIA.acuerdo} - ${numeroRef} - ${actaData.REFERENCIA.anno}`
-     : "...",
-   90,
-   25
- );
- doc.text(moment(fechaCreacion).format(`D [de] MMMM [de] YYYY`), 90, 30);
+  // doc.addImage(LogoUNAC, "PNG", 10, 10, 50, 50, );
+  doc.setFontSize(18);
+  doc.text(actaData ? actaData.TITULO : "...", 50, 10);
+  doc.setFontSize(12);
+  doc.text(actaData ? actaData.SUBTITULO : "...", 95, 15);
+  doc.setFontSize(12);
+  doc.text(
+    actaData
+      ? `${actaData.REFERENCIA.acuerdo} - ${numeroRef} - ${actaData.REFERENCIA.anno}`
+      : "...",
+    90,
+    25
+  );
+  doc.text(moment(fechaCreacion).format(`D [de] MMMM [de] YYYY`), 90, 30);
 
- // doc.setFontSize(12);
- // doc.text(
- //   `${actaData.PROLOGO.descAntesDeLaFecha} ${actaData.NOMBRE_INSTITUCION},
- //   reunidos el ${fechaCreacionPrologoFormat} en el ${lugar}, ${actaData.PROLOGO.desDespuesFecha},
- //   sesionó de ${horaInicioFormat} - ${horaFinalFormat}, ${actaData.PROLOGO.desFinal}`,
- //   10,
- //   40
- // );
- const contenidoTexto = `${actaData.PROLOGO.descAntesDeLaFecha} ${actaData.NOMBRE_INSTITUCION}, 
-reunidos el ${fechaCreacionPrologoFormat} en el ${lugar}, ${actaData.PROLOGO.desDespuesFecha}, 
+  // doc.setFontSize(12);
+  // doc.text(
+  //   `${actaData.PROLOGO.descAntesDeLaFecha} ${actaData.NOMBRE_INSTITUCION},
+  //   reunidos el ${fechaCreacionPrologoFormat} en el ${lugarTexto}, ${actaData.PROLOGO.desDespuesFecha},
+  //   sesionó de ${horaInicioFormat} - ${horaFinalFormat}, ${actaData.PROLOGO.desFinal}`,
+  //   10,
+  //   40
+  // );
+  const contenidoTexto = `${actaData.PROLOGO.descAntesDeLaFecha} ${actaData.NOMBRE_INSTITUCION}, 
+reunidos el ${fechaCreacionPrologoFormat} en el ${lugarTexto}, ${actaData.PROLOGO.desDespuesFecha}, 
 sesionó de ${horaInicioFormat} - ${horaFinalFormat}, ${actaData.PROLOGO.desFinal}`;
 
- // Dividir el contenido en líneas
- const lines = doc.splitTextToSize(
-   contenidoTexto,
-   doc.internal.pageSize.getWidth() - 20
- );
+  // Dividir el contenido en líneas
+  const lines = doc.splitTextToSize(
+    contenidoTexto,
+    doc.internal.pageSize.getWidth() - 20
+  );
 
- // Agregar las líneas de texto
- doc.text(lines, 10, 40);
+  // Agregar las líneas de texto
+  doc.text(lines, 10, 40);
 
- doc.setFontSize(12);
- doc.text("Miembros Presentes:", 10, 70, { fontWeight: 'bold' });
- // doc.text(miembrosPresentes, 20, 70);
- doc.setFontSize(12);
- doc.text("Miembros Ausentes:", 10, 80, { fontWeight: 'bold' });
- // doc.text(miembrosPresentes, 20, 70);
- doc.setFontSize(12);
- doc.text("Miembros Invitados:", 10, 90, { fontWeight: 'bold' });
- // doc.text(miembrosPresentes, 20, 70);
+  doc.setFontSize(12);
+  doc.text("Miembros Presentes:", 10, 70);
+  // doc.text(miembrosPresentes, 20, 70);
+  doc.setFontSize(12);
+  doc.text("Miembros Ausentes:", 10, 80);
+  // doc.text(miembrosPresentes, 20, 70);
+  doc.setFontSize(12);
+  doc.text("Miembros Invitados:", 10, 90);
+  // doc.text(miembrosPresentes, 20, 70);
 
- doc.setFontSize(12);
-  doc.text("DESARROLLO DEL ORDEN DEL DIA", 50, 100, { fontWeight: 'bold' });
-  
+  doc.setFontSize(12);
+  doc.text("DESARROLLO DEL ORDEN DEL DIA", 50, 100);
+  const ordenDelDia = [
+    "1. Apertura de la reunión:",
+    "[Descripción del primer punto]",
+    "2. Lectura y aprobación del acta anterior:",
+    "[Descripción del segundo punto]",
+    // ... agregar más puntos del orden del día
+  ];
+  doc.text(ordenDelDia, 20, 110);
+
+  // Agregar más contenido siguiendo el mismo patrón
+
   doc.setFontSize(12);
   doc.text(`________________________`, 30, 250);
   doc.text(`${actaData.FIRMAS.JFNM.nombre}`, 30, 255);
@@ -127,6 +173,15 @@ sesionó de ${horaInicioFormat} - ${horaFinalFormat}, ${actaData.PROLOGO.desFina
   doc.text(`________________________`, 100, 250);
   doc.text(`${actaData.FIRMAS.OJD.nombre}`, 100, 255);
   doc.text(`${actaData.FIRMAS.OJD.cargo}`, 100, 260);
+
+  doc.addPage();
+  doc.setFontSize(16);
+  doc.setTextColor(18, 47, 117);
+  doc.text(`Número de Referencia: ${numeroRef}`, 5, 20);
+
+  doc.setFontSize(24);
+  doc.setTextColor(100);
+  doc.text(`Lugar del acta: ${lugar}`, 5, 40);
 
   // GUARDA EL PDF EN LA CARPETA TEMPORAL
   doc.save(`src/temp/acta_ref_${numeroRef}.pdf`);
