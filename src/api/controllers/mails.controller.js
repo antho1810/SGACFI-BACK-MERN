@@ -4,8 +4,8 @@ import path from "path";
 import bodyReq from "../../config/http-common.js";
 
 // Cambiar los valores de user y pass
-const user = "sistemagestiondeactasparafi@gmail.com";
-const pass = "lrzpwvszrppqwrql";
+const user = "actasconsejofi@unac.edu.co";
+const pass = "lvsowhhhwtxllmxh";
 
 // RUTA OBSOLETA - SOLO DE EJEMPLO PARA EL ENVIO DE UN CORREO SIMPLE
 export const sendEmail = async (req, res) => {
