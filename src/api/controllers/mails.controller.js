@@ -95,12 +95,12 @@ export const sendEmailPdf = async (req, res) => {
   );
 
   const lugarTexto =
-    acta.lugar === "LDS"
+    lugar === "LDS"
       ? "Laboratorio de sistemas (LDS)"
-      : acta.lugar === "LADSIF"
+      : lugar === "LADSIF"
       ? "Laboratorio de análisis de datos e investigación (LADSIF)"
-      : acta
-      ? acta.lugar
+      : lugar
+      ? lugar
       : "...";
 
   // GENERAR PDF Y ENVIARLO
