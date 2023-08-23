@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import { jsPDF } from "jspdf";
 import path from "path";
 import bodyReq from "../../config/http-common.js";
-import {actaData} from "../../libs/acta.js";
+import { actaData } from "../../libs/acta.js";
 // import LogoUNAC from "../../../src/img/logo-unac.png"
 import moment from "moment";
 
@@ -87,6 +87,7 @@ export const sendEmailPdf = async (req, res) => {
     );
   });
 
+  // FORMATEO DE DATOS
   moment.locale("es");
   const horaInicioFormat = moment(horaInicio).format("h:mm a");
   const horaFinalFormat = moment(horaFinal).format("h:mm a");
@@ -95,13 +96,29 @@ export const sendEmailPdf = async (req, res) => {
   );
 
   const lugarTexto =
-    acta.lugar === "LDS"
+    lugar === "LDS"
       ? "Laboratorio de sistemas (LDS)"
       : acta.lugar === "LADSIF"
       ? "Laboratorio de análisis de datos e investigación (LADSIF)"
       : acta
       ? acta.lugar
       : "...";
+
+  const miembrosPresentesTexto = miembrosPresentes
+    .map((miembro, index) => {
+      return `${index + 1}. ${miembro.nombre} ${miembro.apellido}`;
+    })
+    .join("\n");
+  const miembrosAusentesTexto = miembrosAusentes
+    .map((miembro, index) => {
+      return `${index + 1}. ${miembro.nombre} ${miembro.apellido}`;
+    })
+    .join("\n");
+  const miembrosInvitadosTexto = miembrosInvitados
+    .map((miembro, index) => {
+      return `${index + 1}. ${miembro.nombre} ${miembro.apellido}`;
+    })
+    .join("\n");
 
   // GENERAR PDF Y ENVIARLO
   const doc = new jsPDF();
@@ -145,24 +162,34 @@ sesionó de ${horaInicioFormat} - ${horaFinalFormat}, ${actaData.PROLOGO.desFina
 
   doc.setFontSize(12);
   doc.text("Miembros Presentes:", 10, 70);
-  // doc.text(miembrosPresentes, 20, 70);
+  doc.text(miembrosPresentesTexto, 20, 70);
   doc.setFontSize(12);
   doc.text("Miembros Ausentes:", 10, 80);
-  // doc.text(miembrosPresentes, 20, 70);
+  doc.text(miembrosAusentesTexto, 20, 70);
   doc.setFontSize(12);
   doc.text("Miembros Invitados:", 10, 90);
-  // doc.text(miembrosPresentes, 20, 70);
+  doc.text(miembrosInvitadosTexto, 20, 70);
 
   doc.setFontSize(12);
   doc.text("DESARROLLO DEL ORDEN DEL DIA", 50, 100);
-  const ordenDelDia = [
-    "1. Apertura de la reunión:",
-    "[Descripción del primer punto]",
-    "2. Lectura y aprobación del acta anterior:",
-    "[Descripción del segundo punto]",
-    // ... agregar más puntos del orden del día
-  ];
-  doc.text(ordenDelDia, 20, 110);
+  // Dividir el cronograma en líneas individuales
+  const elementosCronograma = cronograma.split(/\\n\\s*\\n/);
+
+  // Crear un listado para el cronograma
+  const cronogramaTexto = elementosCronograma
+    .map((elemento, index) => {
+      return `${index + 1}. ${elemento}`;
+    })
+    .join("\n");
+  doc.text(cronogramaTexto, 20, 110);
+  // const ordenDelDia = [
+  //   "1. Apertura de la reunión:",
+  //   "[Descripción del primer punto]",
+  //   "2. Lectura y aprobación del acta anterior:",
+  //   "[Descripción del segundo punto]",
+  //   // ... agregar más puntos del orden del día
+  // ];
+  // doc.text(ordenDelDia, 20, 110);
 
   // Agregar más contenido siguiendo el mismo patrón
 
