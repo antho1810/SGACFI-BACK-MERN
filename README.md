@@ -8,5 +8,5 @@
 
 | Requerimiento | Estado |
 | ------------- | :------: |
-| Envio de PDF para multiples correo por medio de nodemailer (posibles modificaciones por temas de prueba) | :hourglass: |
-| Almacenamiento de documentos de Soporte | :hourglass: |
+| Envio de PDF para multiples correo por medio de nodemailer (posibles modificaciones por temas de prueba) | ✅ |
+| Almacenamiento de documentos de Soporte | ✅ |

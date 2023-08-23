@@ -6,7 +6,7 @@ import { actaData } from "../../libs/acta.js";
 // import LogoUNAC from "../../../src/img/logo-unac.png"
 import moment from "moment";
 
-// Cambiar los valores de user y pass
+// Cambiar los valores de user y pass (Borrar al momento de que las pruebas sean exitosas con las nuevas credenciales. 
 // const user = "sistemagestiondeactasparafi@gmail.com";
 // const pass = "lrzpwvszrppqwrql";
 
