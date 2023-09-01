@@ -5,6 +5,7 @@ import bodyReq from "../../config/http-common.js";
 import {actaData} from "../../libs/acta.js";
 // import LogoUNAC from "../../../src/img/logo-unac.png"
 import moment from "moment";
+import * as fs from 'fs/promises'
 
 // Cambiar los valores de user y pass (Borrar al momento de que las pruebas sean exitosas con las nuevas credenciales. 
 // const user = "sistemagestiondeactasparafi@gmail.com";
@@ -190,6 +191,24 @@ sesionó de ${horaInicioFormat} - ${horaFinalFormat}, ${actaData.PROLOGO.desFina
     return path.join(process.cwd(), `src/temp/acta_ref_${refFile}.pdf`);
   };
 
+   async function getActaFiles(ref) {
+    try {
+      const files = await fs.readdir(
+        path.join(
+          process.cwd(),
+          `src/uploads/actas/docs-soportes/soportes_ref_${ref}`
+        )
+      );
+
+      return files.map((file) => ({
+        filename: file,
+        path: `src/uploads/actas/docs-soportes/soportes_ref_${ref}/${file}`,
+      }));
+    } catch (err) {
+      throw err;
+    }
+  }
+
   // EMAIL OPTIONS
 
   const transporter = nodemailer.createTransport({
@@ -219,12 +238,7 @@ sesionó de ${horaInicioFormat} - ${horaFinalFormat}, ${actaData.PROLOGO.desFina
     </div>
   `,
     // DOCUMENTO ADJUNTO UBICADO EN root/src/temp/acta_ref_?.pdf
-    attachments: [
-      {
-        filename: `acta_ref_${numeroRef}.pdf`,
-        path: rootPath(numeroRef),
-      },
-    ],
+    attachments: actaFiles
   };
 
   try {
