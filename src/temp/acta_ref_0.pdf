@@ -10,7 +10,7 @@
 endobj
 4 0 obj
 <<
-/Length 2651
+/Length 2317
 >>
 stream
 0.5670000000000001 w
@@ -49,9 +49,9 @@ BT
 0 g
 28.3464566929133888 728.5041732283464171 Td
 (El consejo de Factultad de Ingenieria de la CORPORACIÓN UNIVERSITARIA ADVENTISTA -UNAC, ) Tj
-T* (reunidos el viernes 11 de agosto de 2023 en el Laboratorio de sistemas \(LDS\), en armonía con lo) Tj
-T* (dispuesto en los Estatutos Generales y la Estructura Orgánica, luego de la convocatoria efectuada a) Tj
-T* (cada uno de los miembros vía WhatsApp, ) Tj
+T* (reunidos el viernes 11 de agosto de 2023 en el LDS, en armonía con lo dispuesto en los Estatutos) Tj
+T* (Generales y la Estructura Orgánica, luego de la convocatoria efectuada a cada uno de los miembros) Tj
+T* (vía, ) Tj
 T* (sesionó de 2:00 pm - 2:45 pm, teniendo en consieración) Tj
 ET
 BT
@@ -65,14 +65,6 @@ BT
 /F1 12 Tf
 13.7999999999999989 TL
 0 g
-56.6929133858267775 643.4648031496062686 Td
-(1. Jackson Palacios) Tj
-T* (2. Isidro Anthony Romero Díaz) Tj
-ET
-BT
-/F1 12 Tf
-13.7999999999999989 TL
-0 g
 28.3464566929133888 615.1183464566928478 Td
 (Miembros Ausentes:) Tj
 ET
@@ -80,23 +72,8 @@ BT
 /F1 12 Tf
 13.7999999999999989 TL
 0 g
-56.6929133858267775 643.4648031496062686 Td
-(1. Jennifer Arias Muñoz) Tj
-ET
-BT
-/F1 12 Tf
-13.7999999999999989 TL
-0 g
 28.3464566929133888 586.7718897637794271 Td
 (Miembros Invitados:) Tj
-ET
-BT
-/F1 12 Tf
-13.7999999999999989 TL
-0 g
-56.6929133858267775 643.4648031496062686 Td
-(1. Walter Arboleda) Tj
-T* (2. Rafael Reyes) Tj
 ET
 BT
 /F1 12 Tf
@@ -110,8 +87,10 @@ BT
 13.7999999999999989 TL
 0 g
 56.6929133858267775 530.0789763779526993 Td
-(1. Hola) Tj
-T* (Se saludan entre asesor y estudiante) Tj
+(1. Apertura de la reunión:) Tj
+T* ([Descripción del primer punto]) Tj
+T* (2. Lectura y aprobación del acta anterior:) Tj
+T* ([Descripción del segundo punto]) Tj
 ET
 BT
 /F1 12 Tf
@@ -358,7 +337,7 @@ endobj
 21 0 obj
 <<
 /Producer (jsPDF 2.5.1)
-/CreationDate (D:20230823134113-05'00')
+/CreationDate (D:20230823120943-05'00')
 >>
 endobj
 22 0 obj
@@ -372,35 +351,35 @@ endobj
 xref
 0 23
 0000000000 65535 f 
-0000003316 00000 n 
-0000005141 00000 n 
+0000002982 00000 n 
+0000004807 00000 n 
 0000000015 00000 n 
 0000000152 00000 n 
-0000002855 00000 n 
-0000002992 00000 n 
-0000003379 00000 n 
-0000003504 00000 n 
-0000003634 00000 n 
-0000003767 00000 n 
-0000003905 00000 n 
-0000004029 00000 n 
-0000004158 00000 n 
-0000004290 00000 n 
-0000004426 00000 n 
-0000004554 00000 n 
-0000004681 00000 n 
-0000004810 00000 n 
-0000004943 00000 n 
-0000005045 00000 n 
-0000005391 00000 n 
-0000005477 00000 n 
+0000002521 00000 n 
+0000002658 00000 n 
+0000003045 00000 n 
+0000003170 00000 n 
+0000003300 00000 n 
+0000003433 00000 n 
+0000003571 00000 n 
+0000003695 00000 n 
+0000003824 00000 n 
+0000003956 00000 n 
+0000004092 00000 n 
+0000004220 00000 n 
+0000004347 00000 n 
+0000004476 00000 n 
+0000004609 00000 n 
+0000004711 00000 n 
+0000005057 00000 n 
+0000005143 00000 n 
 trailer
 <<
 /Size 23
 /Root 22 0 R
 /Info 21 0 R
-/ID [ <385C1B64826639D920F0880081E10DC7> <385C1B64826639D920F0880081E10DC7> ]
+/ID [ <E98EB8353EE27919D430B858E022D886> <E98EB8353EE27919D430B858E022D886> ]
 >>
 startxref
-5581
+5247
 %%EOF
