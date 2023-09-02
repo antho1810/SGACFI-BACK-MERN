@@ -15,7 +15,7 @@ import fs from "fs";
 const getLastRegister = async () => {
   try {
     const ultimoActa = await Acta.findOne().sort({ _id: -1 }).exec();
-    const fixedRef = ultimoActa.numeroRef + 1;
+    const fixedRef = ultimoActa ? ultimoActa.numeroRef + 1 : 1;
 
     return fixedRef;
   } catch (e) {
