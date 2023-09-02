@@ -191,7 +191,7 @@ sesionó de ${horaInicioFormat} - ${horaFinalFormat}, ${actaData.PROLOGO.desFina
     return path.join(process.cwd(), `src/temp/acta_ref_${refFile}.pdf`);
   };
 
-   async function getActaFiles(ref) {
+  async function getActaFiles(ref) {
     try {
       const files = await fs.readdir(
         path.join(
@@ -208,6 +208,15 @@ sesionó de ${horaInicioFormat} - ${horaFinalFormat}, ${actaData.PROLOGO.desFina
       throw err;
     }
   }
+
+  const actaFiles = await getActaFiles(numeroRef);
+
+  actaFiles.push({
+    filename: `acta_ref_${numeroRef}.pdf`,
+    path: path.join(process.cwd(), `src/temp/acta_ref_${numeroRef}.pdf`),
+  });
+
+  // console.log(actaFiles);
 
   // EMAIL OPTIONS
 
