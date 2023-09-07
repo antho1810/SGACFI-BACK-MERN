@@ -191,31 +191,51 @@ sesionó de ${horaInicioFormat} - ${horaFinalFormat}, ${actaData.PROLOGO.desFina
     return path.join(process.cwd(), `src/temp/acta_ref_${refFile}.pdf`);
   };
 
-  async function getActaFiles(ref) {
-    try {
-      const files = await fs.readdir(
-        path.join(
-          process.cwd(),
-          `src/uploads/actas/docs-soportes/soportes_ref_${ref}`
-        )
-      );
+  // Documentos de soporte
+   let statMsg;
 
-      return files.map((file) => ({
-        filename: file,
-        path: `src/uploads/actas/docs-soportes/soportes_ref_${ref}/${file}`,
-      }));
-    } catch (err) {
-      throw err;
-    }
-  }
+   async function folderExists(folderPath) {
+     try {
+       const stats = await fs.stat(folderPath);
+       return stats.isDirectory();
+     } catch (err) {
+       if (err.code === "ENOENT") {
+         return false; // La carpeta no existe
+       }
+       throw err; // Ocurrió un error diferente
+     }
+   }
 
-  const actaFiles = await getActaFiles(numeroRef);
+   async function getActaFiles(ref) {
+     const folderPath = path.join(
+       process.cwd(),
+       `src/uploads/actas/docs-soportes/soportes_ref_${ref}`
+     );
 
-  actaFiles.push({
-    filename: `acta_ref_${numeroRef}.pdf`,
-    path: path.join(process.cwd(), `src/temp/acta_ref_${numeroRef}.pdf`),
-  });
+     if (await folderExists(folderPath)) {
+       statMsg = "Se envía el acta junto a sus documentos de soporte";
+       return fs.readdir(folderPath).then((files) => {
+         return files.map((file) => ({
+           filename: file,
+           path: path.join(folderPath, file),
+         }));
+       });
+     } else {
+       statMsg =
+         "El acta no cuenta con documentos de soporte. Se envió el PDF generado en su lugar.";
+       return [];
+     }
+   }
 
+   const actaFiles = await getActaFiles(numeroRef);
+
+   actaFiles.push({
+     filename: `acta_ref_${numeroRef}.pdf`,
+     path: path.join(process.cwd(), `src/temp/acta_ref_${numeroRef}.pdf`),
+   });
+
+
+  console.log(actaFiles);
   // console.log(actaFiles);
 
   // EMAIL OPTIONS
@@ -247,15 +267,15 @@ sesionó de ${horaInicioFormat} - ${horaFinalFormat}, ${actaData.PROLOGO.desFina
     </div>
   `,
     // DOCUMENTO ADJUNTO UBICADO EN root/src/temp/acta_ref_?.pdf
-    attachments: actaFiles
+    attachments: actaFiles,
   };
 
   try {
     transporter.sendMail(mailOptions, (err, info) => {
-      err ? console.log(err) : console.log("Email enviado correctamente");
+      err ? console.log(err) : console.log("Email enviado correctamente." + ' ' + statMsg);
     });
 
-    res.send({ message: "Recibido correctamente" });
+    res.send({ message: "Recibido correctamente", stat: statMsg });
   } catch (e) {
     console.error(e);
   }
