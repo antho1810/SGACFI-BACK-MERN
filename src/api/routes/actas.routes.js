@@ -60,6 +60,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// DONWLOAD PDF
+router.get('/descargar/referencia/:numeroRef', [auth.checkAuth, auth.isSecretariaOrDecano], actasCtrl.sendActa);
+
 // ACTAS ROUTES CRUD
 router.get('/', [auth.checkAuth], actasCtrl.getActas);
 router.get('/referencia/:numeroRef', [auth.checkAuth], actasCtrl.getActaByRef);
