@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import { jsPDF } from "jspdf";
 import path from "path";
 import bodyReq from "../../config/http-common.js";
-import {actaData} from "../../libs/acta.js";
+import actaData from "../../libs/acta.js";
 // import LogoUNAC from "../../../src/img/logo-unac.png"
 import moment from "moment";
 import * as fs from 'fs/promises'
