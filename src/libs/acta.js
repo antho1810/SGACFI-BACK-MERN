@@ -1,4 +1,4 @@
-export const actaData = {
+const actaData = {
     NOMBRE_INSTITUCION: "CORPORACIÓN UNIVERSITARIA ADVENTISTA -UNAC",
     TITULO: "CONSEJO DE FACULTAD DE INGENIERIA",
     SUBTITULO: "Sesión ordinaria",
@@ -22,3 +22,5 @@ export const actaData = {
         }
     }
 }
+
+export default actaData;
