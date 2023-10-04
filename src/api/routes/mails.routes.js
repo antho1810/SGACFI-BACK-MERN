@@ -4,10 +4,6 @@ const router = Router();
 import * as mailsCtrl from "../controllers/mails.controller.js";
 import * as auth from "../../middlewares/authJwt.js";
 
-router
-  .route("/send")
-  .post([auth.checkAuth, auth.isSecretariaOrDecano], mailsCtrl.sendEmail);
-
 router.route("/send-pdf").post([auth.checkAuth, auth.isSecretariaOrDecano], mailsCtrl.sendEmailPdf);
 
 export default router;
