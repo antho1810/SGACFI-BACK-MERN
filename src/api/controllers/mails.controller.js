@@ -587,7 +587,7 @@ export const sendEmailPdf = async (req, res) => {
     ];
 
     // Condicionales para agregar tablas adicionales según el título del artículo
-    if (voto.titulo === "Homologacíon Interna") {
+    if (voto.titulo === "Homologación Interna") {
       parrafos.push(tableHomologa); // Agregar tabla de homologación
     } else if (voto.titulo === "Homologación Externa") {
       parrafos.push(tableAutoriza); // Agregar tabla de autorización de título
