@@ -51,8 +51,9 @@ export const sendEmailPdf = async (req, res) => {
   // POR MEDIO DE LA DESESTRUCTURACIÓN, PUEDES OBTENER LOS DATOS INDIVIDUALES DE LA ACTA
   const {
     numeroRef,
-    lugar,
+    estado,
     modalidad,
+    lugar,
     miembrosPresentes,
     miembrosInvitados,
     miembrosAusentes,
