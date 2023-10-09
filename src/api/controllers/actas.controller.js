@@ -5,6 +5,27 @@ import actaData from "../../libs/acta.js";
 import moment from "moment";
 import PDFDocument from "pdfkit";
 import { fileURLToPath } from "url";
+import {
+  Document,
+  Packer,
+  Paragraph,
+  Table,
+  TableRow,
+  TableCell,
+  WidthType,
+  AlignmentType,
+  HeadingLevel,
+  PageNumber,
+  Header,
+  Footer,
+  TextRun,
+  BorderStyle,
+  Media,
+  ImageRun,
+  Tab,
+  VerticalAlign, 
+  TextDirection
+} from "docx"
 
 // SEND ACTA
 export const sendActa = async (req, res, next) => {
@@ -37,9 +58,158 @@ export const sendActa = async (req, res, next) => {
       articulos,
     } = acta;
 
-    // Crear un flujo de respuesta para el PDF
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", `attachment; filename=archivo.pdf`);
+    // --- DOCX ---
+    const rows = [
+      // DEFINE LAS FILAS QUE HAYAN EN LA TABLA
+      // ESTA PRIMERA FILA SERÁ NUESTROS ENCABEZADOS
+      new TableRow({
+        children: [
+          // CREAMOS LAS CELDAS
+          // ENCABEZADO PARA NOMBRE
+          new TableCell({
+            children: [
+              // RELLENAMOS LA CELDA CON UN TITULO, PARRAFO, ENTRE OTROS
+              new Paragraph({
+                text: "N°",
+                alignment: AlignmentType.CENTER,
+                style: "Strong",
+              }),
+            ],
+          }),
+          // ENCABEZADO PARA APELLIDO
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: "Nombre Completo",
+                alignment: AlignmentType.CENTER,
+                style: "Strong",
+              }),
+            ],
+          }),
+          // ENCABEZADO PARA CARGO
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: "Cargo",
+                alignment: AlignmentType.CENTER,
+                style: "Strong",
+              }),
+            ],
+          }),
+        ],
+      }),
+    ];
+
+    const rowsHomo = [
+      new TableRow({
+        children: [
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: "Materia Aprobada",
+                alignment: AlignmentType.CENTER,
+                style: "Strong",
+              }),
+            ],
+          }),
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: "Nota Final",
+                alignment: AlignmentType.CENTER,
+                style: "Strong",
+              }),
+            ],
+          }),
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: "Materia Equivalente",
+                alignment: AlignmentType.CENTER,
+                style: "Strong",
+              }),
+            ],
+          }),
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: "Créditos",
+                alignment: AlignmentType.CENTER,
+                style: "Strong",
+              }),
+            ],
+          }),
+        ],
+      }),
+    ];
+
+    const rowsAutrz = [
+      new TableRow({
+        children: [
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: "N°",
+                alignment: AlignmentType.CENTER,
+                style: "Strong",
+              }),
+            ],
+          }),
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: "Nombre del aspirante",
+                alignment: AlignmentType.CENTER,
+                style: "Strong",
+              }),
+            ],
+          }),
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: "Tipo de documento",
+                alignment: AlignmentType.CENTER,
+                style: "Strong",
+              }),
+            ],
+          }),
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: "N° de documento",
+                alignment: AlignmentType.CENTER,
+                style: "Strong",
+              }),
+            ],
+          }),
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: "Programa profesional",
+                alignment: AlignmentType.CENTER,
+                style: "Strong",
+              }),
+            ],
+          }),
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: "Código SNIES",
+                alignment: AlignmentType.CENTER,
+                style: "Strong",
+              }),
+            ],
+          }),
+        ],
+      }),
+    ];
+
+    // PARA RECORRER LOS MIEMBROS DEL ACTA, UTILIZAR Map()
+    // miembrosPresentes.map((presente, index) => {
+    //   console.log(
+    //     `Miembro #: ${index}\nNombre:${presente.nombre}\nApellido:${presente.apellido}\n--------------------------`
+    //   );
+    // });
 
     moment.locale("es");
     const horaInicioFormat = moment(horaInicio).format("h:mm a");
@@ -48,100 +218,482 @@ export const sendActa = async (req, res, next) => {
       `dddd DD [de] MMMM [de] YYYY`
     );
 
-    const doc = new PDFDocument(); // Crear un nuevo documento PDF
-
-    // Escribe el contenido del PDF directamente en el flujo de respuesta
-    doc.pipe(res);
-
-    // Agrega el contenido al PDF
-
-    doc.fontSize(18).text(actaData ? actaData.TITULO : "...", 50, 50);
-    doc.fontSize(12).text(actaData ? actaData.SUBTITULO : "...", 50, 80);
-    doc
-      .fontSize(12)
-      .text(
-        actaData
-          ? `${actaData.REFERENCIA.acuerdo} - ${numeroRef} - ${actaData.REFERENCIA.anno}`
-          : "...",
-        50,
-        100
-      );
-    doc.text(moment(fechaCreacion).format("D [de] MMMM [de] YYYY"), 50, 120);
-    doc.text(`ACTA: ${estado}`, 400, 50);
-
-    const contenidoTexto = `${actaData.PROLOGO.descAntesDeLaFecha} ${actaData.NOMBRE_INSTITUCION}, 
-reunidos el ${fechaCreacionPrologoFormat} en el ${lugar}, ${actaData.PROLOGO.desDespuesFecha}, 
-sesionó de ${horaInicioFormat} - ${horaFinalFormat}, ${actaData.PROLOGO.desFinal}`;
-
-    const lines = doc
-      .font("Helvetica")
-      .fontSize(12)
-      .text(contenidoTexto, 50, 150, {
-        width: 500,
-        align: "left",
-      })
-      .text();
-
-    doc.fontSize(12).text("Miembros Presentes:", 50, doc.y + 20);
-    doc.fontSize(12).text("Miembros Ausentes:", 50, doc.y + 10);
-    doc.fontSize(12).text("Miembros Invitados:", 50, doc.y + 10);
-
-    doc.fontSize(12).text("DESARROLLO DEL ORDEN DEL DÍA", 50, doc.y + 20);
-    const ordenDelDia = [
-      "1. Apertura de la reunión:",
-      "[Descripción del primer punto]",
-      "2. Lectura y aprobación del acta anterior:",
-      "[Descripción del segundo punto]",
-      // ... agregar más puntos del orden del día
-    ];
-    doc
-      .font("Helvetica")
-      .fontSize(12)
-      .text(ordenDelDia.join("\n"), 50, doc.y + 10, {
-        width: 500,
-        align: "justify",
-        lineGap: 5,
+    // FUNCIÓN QUE RECOPILA LOS MIEMBROS Y LOS AGREGA A LAS FILAS DE LA TABLA
+    function createMembersArrayForTablePresent() {
+      return miembrosPresentes.map((miembro, index) => {
+        return new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                // CELDA PARA NOMBRE
+                new Paragraph({
+                  text: (index + 1).toString(),
+                }),
+              ],
+            }),
+            // CELDA PARA APELLIDO
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: `${miembro.nombre} ${miembro.apellido}`,
+                }),
+              ],
+            }),
+            // CELDA PARA CARGO
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: miembro.cargo,
+                }),
+              ],
+            }),
+          ],
+        });
       });
-
-    doc.addPage();
-    doc.fontSize(18).text(actaData ? actaData.TITULO : "...", 50, 50);
-    doc.fontSize(12).text(actaData ? actaData.SUBTITULO : "...", 50, 80);
-    doc
-      .fontSize(12)
-      .text(
-        actaData
-          ? `${actaData.REFERENCIA.acuerdo} - ${numeroRef} - ${actaData.REFERENCIA.anno}`
-          : "...",
-        50,
-        100
-      );
-    doc.text(moment(fechaCreacion).format("D [de] MMMM [de] YYYY"), 50, 120);
-
-    doc.font("Helvetica").fontSize(12).text(lines, 50, 150);
-
-    doc.fontSize(12).text("Articulos", 50, doc.y + 20);
-    articulos.forEach((voto, index) => {
-      if (index > 0) {
-        doc.addPage();
-      }
-      doc.fontSize(16).text(`Detalle de Voto ${index + 1}`, 50, 50);
-      Object.keys(voto).forEach((votoInd, innerIndex) => {
-        doc
-          .font("Helvetica")
-          .fontSize(12)
-          .text(`${votoInd}: ${voto[votoInd]}`, 50, doc.y + 10);
+    }
+    function createMembersArrayForTableAusent() {
+      return miembrosAusentes.map((miembro, index) => {
+        return new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                // CELDA PARA NOMBRE
+                new Paragraph({
+                  text: (index + 1).toString(),
+                }),
+              ],
+            }),
+            // CELDA PARA APELLIDO
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: `${miembro.nombre} ${miembro.apellido}`,
+                }),
+              ],
+            }),
+            // CELDA PARA CARGO
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: miembro.cargo,
+                }),
+              ],
+            }),
+          ],
+        });
       });
+    }
+    function createMembersArrayForTableInvit() {
+      return miembrosInvitados.map((miembro, index) => {
+        return new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                // CELDA PARA NOMBRE
+                new Paragraph({
+                  text: (index + 1).toString(),
+                }),
+              ],
+            }),
+            // CELDA PARA APELLIDO
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: `${miembro.nombre} ${miembro.apellido}`,
+                }),
+              ],
+            }),
+            // CELDA PARA CARGO
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: miembro.cargo,
+                }),
+              ],
+            }),
+          ],
+        });
+      });
+    }
+    function createArticuloHomologa() {
+      return articulos.map((articulo) => {
+        return new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: articulo.materiaAprobada,
+                }),
+              ],
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: articulo.nota,
+                }),
+              ],
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: articulo.materiaEquivalente,
+                }),
+              ],
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: articulo.credito,
+                }),
+              ],
+            }),
+          ],
+        });
+      });
+    }
+    function createAutoriza() {
+      return articulos.map((articulo, index) => {
+        return new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: (index + 1).toString(),
+                }),
+              ],
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: articulo.nombreAspirante,
+                }),
+              ],
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: articulo.tipoDocumento,
+                }),
+              ],
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: articulo.noDocumento,
+                }),
+              ],
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: articulo.programaEstudiante,
+                }),
+              ],
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: articulo.codigoSnies,
+                }),
+              ],
+            }),
+          ],
+        });
+      });
+    }
+
+    let autoRowsPresent = createMembersArrayForTablePresent();
+    let autoRowsAusent = createMembersArrayForTableAusent();
+    let autoRowsInvit = createMembersArrayForTableInvit();
+    let autoRowsHomologa = createArticuloHomologa();
+    let autoRowsAutoriza = createAutoriza();
+
+    const fixedRowsHomologa = rowsHomo.concat(autoRowsHomologa);
+    const fixedRowsAutoriza = rowsAutrz.concat(autoRowsAutoriza);
+    const fixedRowsPresent = rows.concat(autoRowsPresent);
+    const fixedRowsAusent = rows.concat(autoRowsAusent);
+    const fixedRowsInvit = rows.concat(autoRowsInvit);
+
+    // USO DE TABLAS
+    const tablePresent = new Table({
+      rows: fixedRowsPresent,
+      width: {
+        size: 100,
+        type: WidthType.AUTO,
+      },
+      alignment: AlignmentType.CENTER,
+    });
+    const tableAusent = new Table({
+      rows: fixedRowsAusent,
+      width: {
+        size: 100,
+        type: WidthType.AUTO,
+      },
+      alignment: AlignmentType.CENTER,
+    });
+    const tableInvit = new Table({
+      rows: fixedRowsInvit,
+      width: {
+        size: 100,
+        type: WidthType.AUTO,
+      },
+      alignment: AlignmentType.CENTER,
+    });
+    const tableHomologa = new Table({
+      rows: fixedRowsHomologa,
+      width: {
+        size: 100,
+        type: WidthType.AUTO,
+      },
+      alignment: AlignmentType.CENTER,
     });
 
-    doc.fontSize(12).text("________________________", 50, doc.y + 30);
-    doc.text(actaData.FIRMAS.JFNM.nombre, 50, doc.y + 5);
-    doc.text(actaData.FIRMAS.JFNM.cargo, 50, doc.y + 5);
-    doc.text("________________________", 250, doc.y - 30);
-    doc.text(actaData.FIRMAS.OJD.nombre, 250, doc.y + 5);
-    doc.text(actaData.FIRMAS.OJD.cargo, 250, doc.y + 5);
-    // Finaliza el documento PDF
-    doc.end();
-  }
+    const tableAutoriza = new Table({
+      rows: fixedRowsAutoriza,
+      width: {
+        size: 100,
+        type: WidthType.AUTO,
+      },
+      alignment: AlignmentType.CENTER,
+    });
+
+    const firma = new Table({
+      width: {
+        size: 100,
+        type: WidthType.AUTO,
+      },
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({
+              width: {
+                size: 50,
+                type: WidthType.PERCENTAGE,
+              },
+              borders: {
+                top: {
+                  style: BorderStyle.SINGLE,
+                  size: 3,
+                  color: "000000",
+                },
+                left: {
+                  style: BorderStyle.NONE,
+                },
+                bottom: {
+                  style: BorderStyle.NONE,
+                },
+                right: {
+                  style: BorderStyle.NONE,
+                },
+              },
+              children: [
+                new Paragraph({
+                  text: actaData.FIRMAS.JFNM.nombre,
+                  style: "Strong",
+                }),
+                new Paragraph({
+                  text: actaData.FIRMAS.JFNM.cargo,
+                  style: "Strong",
+                }),
+              ],
+            }),
+            new TableCell({
+              width: {
+                size: 50,
+                type: WidthType.PERCENTAGE,
+              },
+              borders: {
+                top: {
+                  style: BorderStyle.SINGLE,
+                  size: 3,
+                  color: "000000",
+                },
+                left: {
+                  style: BorderStyle.NONE,
+                },
+                bottom: {
+                  style: BorderStyle.NONE,
+                },
+                right: {
+                  style: BorderStyle.NONE,
+                },
+              },
+              children: [
+                new Paragraph({
+                  text: actaData.FIRMAS.OJD.nombre,
+                  style: "Strong",
+                }),
+                new Paragraph({
+                  text: actaData.FIRMAS.OJD.cargo,
+                  style: "Strong",
+                }),
+              ],
+            }),
+          ],
+        }),
+      ],
+    });
+
+    const parrafosArticulos = articulos.map((voto, index) => {
+      const parrafos = [
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: `Articulos ${(index + 1).toString()} ${voto.titulo}_${
+                voto.nombreAspirante
+              }`,
+              bold: true,
+            }),
+          ],
+          alignment: AlignmentType.CENTER,
+        }),
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: `Aprobar la solicitud de ${voto.titulo} del estudiante ${voto.nombreAspirante}, identificado con ${voto.tipoDocumento} numero ${voto.noDocumento}`,
+              alignment: AlignmentType.JUSTIFIED,
+            }),
+          ],
+        }),
+      ];
+
+      // Condicionales para agregar tablas adicionales según el título del artículo
+      if (voto.titulo === "Homologación Interna") {
+        parrafos.push(tableHomologa); // Agregar tabla de homologación
+      } else if (voto.titulo === "Homologación Externa") {
+        parrafos.push(tableAutoriza); // Agregar tabla de autorización de título
+      } else if (
+        voto.titulo === "Autorización de expedición de títulos académicos"
+      ) {
+        parrafos.push(tableAutoriza); // Agregar tabla de autorización de título
+      }
+
+      return parrafos;
+    });
+
+    const lugarTexto =
+      lugar.toUpperCase() === "LDS"
+        ? "Laboratorio de sistemas (LDS)"
+        : lugar.toUpperCase() === "LADSIF"
+        ? "Laboratorio de análisis de datos e investigación (LADSIF)"
+        : lugar
+        ? lugar
+        : "...";
+
+    // USO BÁSICO
+    const doc = new Document({
+      sections: [
+        {
+          properties: {},
+          headers: {
+            default: new Header({
+              children: [
+                // image,
+                // imageBase64,
+                new Paragraph({
+                  text: actaData.TITULO,
+                  alignment: AlignmentType.CENTER,
+                  style: "Strong",
+                }),
+                new Paragraph({
+                  text: actaData.SUBTITULO,
+                  alignment: AlignmentType.CENTER,
+                }),
+                new Paragraph({
+                  text: `${actaData.REFERENCIA.acuerdo} - ${numeroRef} - ${actaData.REFERENCIA.anno}`,
+                  alignment: AlignmentType.CENTER,
+                }),
+                new Paragraph({
+                  text: moment(fechaCreacion).format(`D [de] MMMM [de] YYYY`),
+                  alignment: AlignmentType.CENTER,
+                }),
+                new Paragraph({
+                  text: `ACTA: ${estado}`,
+                  alignment: AlignmentType.END,
+                }),
+              ],
+            }),
+          },
+          footers: {
+            default: new Footer({
+              children: [
+                firma,
+                new Paragraph({
+                  alignment: AlignmentType.END,
+                  children: [
+                    new TextRun({
+                      children: ["Page Number: ", PageNumber.CURRENT],
+                    }),
+                    new TextRun({
+                      children: [" to ", PageNumber.TOTAL_PAGES],
+                    }),
+                  ],
+                }),
+              ],
+            }),
+          },
+          children: [
+            // CREAMOS PARRAFOS INDEPENDIENTES
+            new Paragraph({
+              text: `${actaData.PROLOGO.descAntesDeLaFecha} ${actaData.NOMBRE_INSTITUCION}, reunidos el ${fechaCreacionPrologoFormat}, de manera ${modalidad} en el ${lugarTexto} de la Facultad de Ingeniería, ${actaData.PROLOGO.desDespuesFecha}, sesionó de ${horaInicioFormat} - ${horaFinalFormat}, ${actaData.PROLOGO.desFinal}`,
+              alignment: AlignmentType.JUSTIFIED,
+            }),
+            new Paragraph({
+              text: "MIEMBROS PRESENTES",
+              heading: HeadingLevel.HEADING_2,
+              alignment: AlignmentType.CENTER,
+            
+            }),
+            // table,
+            tablePresent,
+            new Paragraph({
+              text: "MIEMBROS AUSENTES",
+              heading: HeadingLevel.HEADING_2,
+              alignment: AlignmentType.CENTER,
+            
+            }),
+            // table,
+            tableAusent,
+            new Paragraph({
+              text: "MIEMBROS INVITADOS",
+              heading: HeadingLevel.HEADING_2,
+              alignment: AlignmentType.CENTER,
+            
+            }),
+            tableInvit,
+            new Paragraph({
+              text: "CRONOGRAMA",
+              heading: HeadingLevel.HEADING_2,
+              alignment: AlignmentType.CENTER,
+            
+            }),
+            new Paragraph({
+              text: `${cronograma}`,
+              alignment: AlignmentType.JUSTIFIED,
+              spacing: {
+                line: 360, // Interlineado de 1.5 (1.5 * 12 puntos por línea = 18 puntos por línea)
+              },
+            }),
+            new Paragraph({
+              text: "RESUELVE",
+              heading: HeadingLevel.HEADING_2,
+              alignment: AlignmentType.CENTER,
+            }),
+            ...parrafosArticulos.flat(),
+          ],
+        },
+      ],
+    });
+
+     const buffer = await Packer.toBuffer(doc);
+
+     // Establecer las cabeceras de la respuesta para el DOCX
+     res.setHeader("Content-Disposition", `attachment; filename=archivo.docx`);
+
+     // Enviar el DOCX como respuesta
+     res.send(buffer);
+  
+  } 
 };
 
 // GET ACTAS
