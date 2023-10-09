@@ -3,7 +3,6 @@ import path from "path";
 import * as fs from "fs";
 import actaData from "../../libs/acta.js";
 import moment from "moment";
-import PDFDocument from "pdfkit";
 import { fileURLToPath } from "url";
 import {
   Document,
