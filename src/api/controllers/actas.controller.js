@@ -578,10 +578,10 @@ export const sendActa = async (req, res, next) => {
         ];
 
         // Condicionales para agregar tablas adicionales según el título del artículo
-        if (voto.titulo === "Homologación Interna") {
+        if (voto.titulo === "Homologación Interna" || voto.titulo === "Homologación Externa") {
           parrafos.push(tableHomologa); // Agregar tabla de homologación
         } else if (
-          voto.titulo === "Homologación Externa" ||
+          
           voto.titulo === "Autorización de expedición de títulos académicos"
         ) {
           parrafos.push(tableAutoriza); // Agregar tabla de autorización de título
