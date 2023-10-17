@@ -587,10 +587,12 @@ export const sendEmailPdf = async (req, res) => {
       ];
 
       // Condicionales para agregar tablas adicionales según el título del artículo
-      if (voto.titulo === "Homologación Interna") {
+      if (
+        voto.titulo === "Homologación Interna" ||
+        voto.titulo === "Homologación Externa"
+      ) {
         parrafos.push(tableHomologa); // Agregar tabla de homologación
       } else if (
-        voto.titulo === "Homologación Externa" ||
         voto.titulo === "Autorización de expedición de títulos académicos"
       ) {
         parrafos.push(tableAutoriza); // Agregar tabla de autorización de título
@@ -672,11 +674,7 @@ export const sendEmailPdf = async (req, res) => {
             text: "MIEMBROS PRESENTES",
             heading: HeadingLevel.HEADING_2,
             alignment: AlignmentType.CENTER,
-            style: {
-              paragraph: {
-                color: "000000",
-              },
-            },
+            style: "Strong",
           }),
           // table,
           tablePresent,
@@ -684,11 +682,7 @@ export const sendEmailPdf = async (req, res) => {
             text: "MIEMBROS AUSENTES",
             heading: HeadingLevel.HEADING_2,
             alignment: AlignmentType.CENTER,
-            style: {
-              paragraph: {
-                color: "000000",
-              },
-            },
+            style: "Strong",
           }),
           // table,
           tableAusent,
@@ -696,11 +690,7 @@ export const sendEmailPdf = async (req, res) => {
             text: "MIEMBROS INVITADOS",
             heading: HeadingLevel.HEADING_2,
             alignment: AlignmentType.CENTER,
-            style: {
-              paragraph: {
-                color: "000000",
-              },
-            },
+            style: "Strong",
           }),
           tableInvit,
           new Paragraph({
@@ -731,11 +721,7 @@ export const sendEmailPdf = async (req, res) => {
             text: "RESUELVE",
             heading: HeadingLevel.HEADING_2,
             alignment: AlignmentType.CENTER,
-            style: {
-              paragraph: {
-                color: "000000",
-              },
-            },
+            style: "Strong"
           }),
           ...parrafosArticulos.flat(),
         ],
