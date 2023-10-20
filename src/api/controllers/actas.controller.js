@@ -432,7 +432,7 @@ export const sendActa = async (req, res, next) => {
       rows: fixedRowsPresent,
       width: {
         size: 100,
-        type: WidthType.AUTO,
+        type: WidthType.PERCENTAGE,
       },
       alignment: AlignmentType.CENTER,
     });
@@ -440,7 +440,7 @@ export const sendActa = async (req, res, next) => {
       rows: fixedRowsAusent,
       width: {
         size: 100,
-        type: WidthType.AUTO,
+        type: WidthType.PERCENTAGE,
       },
       alignment: AlignmentType.CENTER,
     });
@@ -448,7 +448,7 @@ export const sendActa = async (req, res, next) => {
       rows: fixedRowsInvit,
       width: {
         size: 100,
-        type: WidthType.AUTO,
+        type: WidthType.PERCENTAGE,
       },
       alignment: AlignmentType.CENTER,
     });
@@ -456,7 +456,7 @@ export const sendActa = async (req, res, next) => {
       rows: fixedRowsHomologa,
       width: {
         size: 100,
-        type: WidthType.AUTO,
+        type: WidthType.PERCENTAGE,
       },
       alignment: AlignmentType.CENTER,
     });
@@ -465,7 +465,7 @@ export const sendActa = async (req, res, next) => {
       rows: fixedRowsAutoriza,
       width: {
         size: 100,
-        type: WidthType.AUTO,
+        type: WidthType.PERCENTAGE,
       },
       alignment: AlignmentType.CENTER,
     });
@@ -473,7 +473,7 @@ export const sendActa = async (req, res, next) => {
     const firma = new Table({
       width: {
         size: 100,
-        type: WidthType.AUTO,
+        type: WidthType.PERCENTAGE,
       },
       rows: [
         new TableRow({
