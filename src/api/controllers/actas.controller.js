@@ -570,7 +570,7 @@ export const sendActa = async (req, res, next) => {
           new Paragraph({
             children: [
               new TextRun({
-                text: `Aprobar la solicitud de ${voto.titulo} del estudiante ${voto.nombreAspirante}, identificado con ${voto.tipoDocumento} número ${voto.noDocumento}. Aprobado por ${voto.Aprobacion}.`,
+                text: `Aprobar la solicitud de ${voto.titulo} del estudiante ${voto.nombreAspirante}, identificado con ${voto.tipoDocumento} número ${voto.noDocumento}. ${voto.observacion}. Aprobado por ${voto.Aprobacion}.`,
                 alignment: AlignmentType.JUSTIFIED,
               }),
             ],

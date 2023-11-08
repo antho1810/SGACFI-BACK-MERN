@@ -579,7 +579,7 @@ export const sendEmailPdf = async (req, res) => {
         new Paragraph({
           children: [
             new TextRun({
-              text: `Aprobar la solicitud de ${voto.titulo} del estudiante ${voto.nombreAspirante}, identificado con ${voto.tipoDocumento} número ${voto.noDocumento}. Aprobado por ${voto.Aprobacion}`,
+              text: `Aprobar la solicitud de ${voto.titulo} del estudiante ${voto.nombreAspirante}, identificado con ${voto.tipoDocumento} número ${voto.noDocumento}. ${voto.observacion}. Aprobado por ${voto.Aprobacion}`,
               alignment: AlignmentType.JUSTIFIED,
             }),
           ],
@@ -812,9 +812,9 @@ export const sendEmailPdf = async (req, res) => {
   // GUARDA EL PDF EN LA CARPETA TEMPORAL
   // doc.save(`src/temp/acta_ref_${numeroRef}.pdf`);
 
-  const rootPath = (refFile) => {
-    return path.join(process.cwd(), `src/temp/acta_ref_${refFile}.pdf`);
-  };
+  // const rootPath = (refFile) => {
+  //   return path.join(process.cwd(), `src/temp/acta_ref_${refFile}.pdf`);
+  // };
 
   // Documentos de soporte
   let statMsg;
@@ -834,7 +834,7 @@ export const sendEmailPdf = async (req, res) => {
   async function getActaFiles(ref) {
     const folderPath = path.join(
       process.cwd(),
-      `uploads/actas/docs-soportes/soportes_ref_${ref}`
+      `src/uploads/actas/docs-soportes/soportes_ref_${ref}`
     );
 
     if (await folderExists(folderPath)) {
