@@ -834,7 +834,7 @@ export const sendEmailPdf = async (req, res) => {
   async function getActaFiles(ref) {
     const folderPath = path.join(
       process.cwd(),
-      `src/uploads/actas/docs-soportes/soportes_ref_${ref}`
+      `uploads/actas/docs-soportes/soportes_ref_${ref}`
     );
 
     if (await folderExists(folderPath)) {
