@@ -7,9 +7,9 @@ const actaData = {
         anno: "2023"
     },
     PROLOGO: {
-        descAntesDeLaFecha: "El consejo de Factultad de Ingenieria de la",
+        descAntesDeLaFecha: "El Consejo de Facultad de Ingeniería de la",
         desDespuesFecha: "en armonía con lo dispuesto en los Estatutos Generales y la Estructura Orgánica, luego de la convocatoria efectuada a cada uno de los miembros vía WhatsApp",
-        desFinal: "teniendo en consieración"
+        desFinal: "teniendo en consideración"
     },
     FIRMAS: {
         JFNM: {
