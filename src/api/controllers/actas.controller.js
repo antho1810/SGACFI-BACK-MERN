@@ -335,7 +335,7 @@ export const sendActa = async (req, res, next) => {
               new TableCell({
                 children: [
                   new Paragraph({
-                    text: articulo.nota,
+                    text: articulo.notaCalificacion,
                   }),
                 ],
               }),

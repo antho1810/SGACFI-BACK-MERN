@@ -345,7 +345,7 @@ export const sendEmailPdf = async (req, res) => {
             new TableCell({
               children: [
                 new Paragraph({
-                  text: articulo.nota,
+                  text: articulo.notaCalificacion,
                 }),
               ],
             }),
