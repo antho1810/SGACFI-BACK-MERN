@@ -58,7 +58,32 @@ const storage = multer.diskStorage({
   },
 });
 
+const uploadStorage = multer.diskStorage({
+  destination: async (req, file, cb) => {
+    try {
+      const { ref } = req.params;
+      const folderPath = path.join(
+        process.cwd(),
+        "src/uploads/actas/docs-soportes",
+        `soportes_ref_${ref}`
+      );
+      if (!fs.existsSync(folderPath)) {
+        fs.mkdirSync(folderPath);
+      }
+      cb(null, folderPath);
+      console.log(req.params);
+    } catch (error) {
+      console.error("Error al obtener última referencia:", error);
+    }
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
 const upload = multer({ storage: storage });
+const update = multer({ storage: uploadStorage });
+
 
 // DONWLOAD PDF
 router.get('/descargar/referencia/:numeroRef', [auth.checkAuth, auth.isSecretariaOrDecano], actasCtrl.sendActa);
@@ -76,6 +101,14 @@ router.post(
 router.post(
   "/carga",
   [auth.checkAuth, upload.array("soportes")],
+  (req, res) => {
+    res.status(200).json({ message: "Archivos cargados exitosamente" });
+  }
+);
+
+router.post(
+  "/carga/actualizar/referencia/:ref",
+  [auth.checkAuth, update.array("updateSoportes")],
   (req, res) => {
     res.status(200).json({ message: "Archivos cargados exitosamente" });
   }
