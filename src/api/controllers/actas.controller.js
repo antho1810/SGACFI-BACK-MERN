@@ -335,7 +335,7 @@ export const sendActa = async (req, res, next) => {
               new TableCell({
                 children: [
                   new Paragraph({
-                    text: articulo.notaCalificacion,
+                    text: articulo.nota,
                   }),
                 ],
               }),
@@ -593,9 +593,11 @@ export const sendActa = async (req, res, next) => {
 
     const lugarTexto =
       lugar === "LDS"
-        ? "Laboratorio de sistemas (LDS)"
+        ? "Labor0atorio de sistemas (LDS)"
         : lugar === "LADSIF"
         ? "Laboratorio de análisis de datos e investigación (LADSIF)"
+        : lugar === "LMF"
+        ? "Laboratorio Múltiple de Física (LMF)"
         : lugar
         ? lugar
         : "...";
