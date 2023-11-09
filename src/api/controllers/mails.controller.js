@@ -64,9 +64,349 @@ export const sendEmailPdf = async (req, res) => {
     articulos,
   } = response.data;
 
-  // ESTAS IMPRESIONES DE CONSOLA SON OPCIONALES, PERO NECESARIAS PARA LA COMPRENSIÓN DEL FUNCIONAMIENTO DEL CONTROLADOR
-  // console.log(numeroRef, lugar, modalidad);
+  const votosAutori = articulos
+    .filter((articulo) => {
+      return (
+        articulo["titulo"] ===
+        "Autorización de expedición de títulos académicos"
+      );
+    })
+    .reduce((acumulador, articulo) => {
+      const {
+        nombreAspirante,
+        titulo,
+        tipoDocumento,
+        noDocumento,
+        Aprobacion,
+        observacion,
+      } = articulo;
+      const objetoExistente = acumulador.find(
+        (item) => item.nombreAspirante === nombreAspirante
+      );
 
+      if (objetoExistente) {
+        objetoExistente.datos.push(articulo);
+      } else {
+        acumulador.push({
+          nombreAspirante: nombreAspirante,
+          titulo: titulo,
+          tipoDocumento: tipoDocumento,
+          noDocumento: noDocumento,
+          Aprobacion: Aprobacion,
+          observacion: observacion,
+          datos: [articulo],
+        });
+      }
+
+      return acumulador;
+    }, []);
+  console.dir(votosAutori);
+
+  // Autorizacion
+  const VotosAutoriza = votosAutori.map((obj, index) => {
+    let autoRows = obj.datos.map((articulo, index) => {
+      return new TableRow({
+        children: [
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: (index + 1).toString(),
+              }),
+            ],
+          }),
+          // ENCABEZADO PARA NOTA FINAL
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: articulo.nombreAspirante,
+              }),
+            ],
+          }),
+          // ENCABEZADO PARA MATERIA EQUIVALENTE
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: articulo.tipoDocumento,
+              }),
+            ],
+          }),
+          // ENCABEZADO PARA CREDITOS
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: articulo.noDocumento,
+              }),
+            ],
+          }),
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: articulo.programaEstudiante,
+              }),
+            ],
+          }),
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: articulo.codigoSnies,
+              }),
+            ],
+          }),
+        ],
+      });
+    });
+    return [
+      new Paragraph({
+        text: `Artículos ${(index + 1).toString()} ${obj.titulo}_${
+          obj.nombreAspirante
+        }`,
+        style: "Strong",
+        spacing: {
+          before: 200,
+          after: 50,
+        },
+      }),
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: `Aprobar la solicitud de ${obj.titulo} del estudiante ${obj.nombreAspirante}, identificado con ${obj.tipoDocumento} número ${obj.noDocumento}. ${obj.observacion}. Aprobado por ${obj.Aprobacion}`,
+            alignment: AlignmentType.JUSTIFIED,
+          }),
+        ],
+      }),
+      new Table({
+        rows: [
+          new TableRow({
+            children: [
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    text: "N°",
+                    style: "Strong",
+                  }),
+                ],
+              }),
+
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    text: "Nombre del aspirante",
+                    style: "Strong",
+                  }),
+                ],
+              }),
+
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    text: "Tipo de documento",
+                    style: "Strong",
+                  }),
+                ],
+              }),
+
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    text: "N° de documento",
+                    style: "Strong",
+                  }),
+                ],
+              }),
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    text: "Programa profesional",
+                    style: "Strong",
+                  }),
+                ],
+              }),
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    text: "Código SNIES",
+                    style: "Strong",
+                  }),
+                ],
+              }),
+            ],
+          }),
+        ].concat(autoRows),
+        width: {
+          size: 100,
+          type: "pct",
+        },
+      }),
+    ];
+  });
+
+  console.log(VotosAutoriza);
+
+  const objetosAgrupados = articulos
+    .filter((match) => {
+      return (
+        match["titulo"] === "Homologación Interna" ||
+        match["titulo"] === "Homologación Externa"
+      );
+    })
+    .reduce((acumulador, articulo) => {
+      const {
+        nombreAspirante,
+        titulo,
+        tipoDocumento,
+        noDocumento,
+        Aprobacion,
+        observacion,
+      } = articulo;
+      const objetoExistente = acumulador.find(
+        (item) => item.nombreAspirante === nombreAspirante
+      );
+
+      if (objetoExistente) {
+        objetoExistente.datos.push(articulo);
+      } else {
+        acumulador.push({
+          nombreAspirante: nombreAspirante,
+          titulo: titulo,
+          tipoDocumento: tipoDocumento,
+          noDocumento: noDocumento,
+          Aprobacion: Aprobacion,
+          observacion: observacion,
+          datos: [articulo],
+        });
+      }
+
+      return acumulador;
+    }, []);
+  console.dir(objetosAgrupados);
+
+  // Homologacion
+  const generateVotosTable = objetosAgrupados.map((obj, index) => {
+    let autoRows = obj.datos.map((articulo) => {
+      return new TableRow({
+        children: [
+          // ENCABEZADO PARA MATERIA APROBADA
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: articulo.materiaAprobada,
+              }),
+            ],
+          }),
+          // ENCABEZADO PARA NOTA FINAL
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: articulo.notaCalificacion,
+              }),
+            ],
+          }),
+          // ENCABEZADO PARA MATERIA EQUIVALENTE
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: articulo.materiaEquivalente,
+              }),
+            ],
+          }),
+          // ENCABEZADO PARA CREDITOS
+          new TableCell({
+            children: [
+              new Paragraph({
+                text: articulo.credito,
+              }),
+            ],
+          }),
+        ],
+      });
+    });
+    return [
+      new Paragraph({
+        text: `Artículos ${(index + 1).toString()} ${obj.titulo}_${
+          obj.nombreAspirante
+        }`,
+        style: "Strong",
+        spacing: {
+          before: 200,
+          after: 50,
+        },
+      }),
+
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: `Aprobar la solicitud de ${obj.titulo} del estudiante ${obj.nombreAspirante}, identificado con ${obj.tipoDocumento} número ${obj.noDocumento}. ${obj.observacion}. Aprobado por ${obj.Aprobacion}`,
+            alignment: AlignmentType.JUSTIFIED,
+          }),
+        ],
+      }),
+      new Table({
+        rows: [
+          new TableRow({
+            children: [
+              // ENCABEZADO PARA MATERIA APROBADA
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    text: "Materia Aprobada",
+                    style: "Strong",
+                  }),
+                ],
+              }),
+              // ENCABEZADO PARA NOTA FINAL
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    text: "Nota Final",
+                    style: "Strong",
+                  }),
+                ],
+              }),
+              // ENCABEZADO PARA MATERIA EQUIVALENTE
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    text: "Materia Equivalente",
+                    style: "Strong",
+                  }),
+                ],
+              }),
+              // ENCABEZADO PARA CREDITOS
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    text: "Créditos",
+                    style: "Strong",
+                  }),
+                ],
+              }),
+            ],
+          }),
+        ].concat(autoRows),
+        width: {
+          size: 100,
+          type: "pct",
+        },
+      }),
+    ];
+  });
+
+  
+  let fixDocVotosTemp = [];
+
+  for (let i = 0; i < generateVotosTable.length; i++) {
+    for (let j = 0; j < generateVotosTable[i].length; j++) {
+      fixDocVotosTemp.push(generateVotosTable[i][j]);
+    }
+  }
+
+  let fixDocVotosAutoriza = [];
+
+  for (let i = 0; i < VotosAutoriza.length; i++) {
+    for (let j = 0; j < VotosAutoriza[i].length; j++) {
+      fixDocVotosAutoriza.push(VotosAutoriza[i][j]);
+    }
+  }
   // --- DOCX ---
   const rows = [
     // DEFINE LAS FILAS QUE HAYAN EN LA TABLA
@@ -100,110 +440,6 @@ export const sendEmailPdf = async (req, res) => {
           children: [
             new Paragraph({
               text: "Cargo",
-              alignment: AlignmentType.CENTER,
-              style: "Strong",
-            }),
-          ],
-        }),
-      ],
-    }),
-  ];
-
-  const rowsHomo = [
-    new TableRow({
-      children: [
-        new TableCell({
-          children: [
-            new Paragraph({
-              text: "Materia Aprobada",
-              alignment: AlignmentType.CENTER,
-              style: "Strong",
-            }),
-          ],
-        }),
-        new TableCell({
-          children: [
-            new Paragraph({
-              text: "Nota Final",
-              alignment: AlignmentType.CENTER,
-              style: "Strong",
-            }),
-          ],
-        }),
-        new TableCell({
-          children: [
-            new Paragraph({
-              text: "Materia Equivalente",
-              alignment: AlignmentType.CENTER,
-              style: "Strong",
-            }),
-          ],
-        }),
-        new TableCell({
-          children: [
-            new Paragraph({
-              text: "Créditos",
-              alignment: AlignmentType.CENTER,
-              style: "Strong",
-            }),
-          ],
-        }),
-      ],
-    }),
-  ];
-
-  const rowsAutrz = [
-    new TableRow({
-      children: [
-        new TableCell({
-          children: [
-            new Paragraph({
-              text: "N°",
-              alignment: AlignmentType.CENTER,
-              style: "Strong",
-            }),
-          ],
-        }),
-        new TableCell({
-          children: [
-            new Paragraph({
-              text: "Nombre del aspirante",
-              alignment: AlignmentType.CENTER,
-              style: "Strong",
-            }),
-          ],
-        }),
-        new TableCell({
-          children: [
-            new Paragraph({
-              text: "Tipo de documento",
-              alignment: AlignmentType.CENTER,
-              style: "Strong",
-            }),
-          ],
-        }),
-        new TableCell({
-          children: [
-            new Paragraph({
-              text: "N° de documento",
-              alignment: AlignmentType.CENTER,
-              style: "Strong",
-            }),
-          ],
-        }),
-        new TableCell({
-          children: [
-            new Paragraph({
-              text: "Programa profesional",
-              alignment: AlignmentType.CENTER,
-              style: "Strong",
-            }),
-          ],
-        }),
-        new TableCell({
-          children: [
-            new Paragraph({
-              text: "Código SNIES",
               alignment: AlignmentType.CENTER,
               style: "Strong",
             }),
@@ -325,113 +561,10 @@ export const sendEmailPdf = async (req, res) => {
     });
   }
 
-  function createArticuloHomologa() {
-    return articulos
-      .filter(
-        (articulo) =>
-          articulo.titulo === "Homologación Interna" ||
-          articulo.titulo === "Homologación Externa"
-      )
-      .map((articulo) => {
-        return new TableRow({
-          children: [
-            new TableCell({
-              children: [
-                new Paragraph({
-                  text: articulo.materiaAprobada,
-                }),
-              ],
-            }),
-            new TableCell({
-              children: [
-                new Paragraph({
-                  text: articulo.notaCalificacion,
-                }),
-              ],
-            }),
-            new TableCell({
-              children: [
-                new Paragraph({
-                  text: articulo.materiaEquivalente,
-                }),
-              ],
-            }),
-            new TableCell({
-              children: [
-                new Paragraph({
-                  text: articulo.credito,
-                }),
-              ],
-            }),
-          ],
-        });
-      });
-  }
-
-  function createAutoriza() {
-    return articulos
-      .filter(
-        (articulo) =>
-          articulo.titulo === "Autorización de expedición de títulos académicos"
-      )
-      .map((articulo, index) => {
-        return new TableRow({
-          children: [
-            new TableCell({
-              children: [
-                new Paragraph({
-                  text: (index + 1).toString(),
-                }),
-              ],
-            }),
-            new TableCell({
-              children: [
-                new Paragraph({
-                  text: articulo.nombreAspirante,
-                }),
-              ],
-            }),
-            new TableCell({
-              children: [
-                new Paragraph({
-                  text: articulo.tipoDocumento,
-                }),
-              ],
-            }),
-            new TableCell({
-              children: [
-                new Paragraph({
-                  text: articulo.noDocumento,
-                }),
-              ],
-            }),
-            new TableCell({
-              children: [
-                new Paragraph({
-                  text: articulo.programaEstudiante,
-                }),
-              ],
-            }),
-            new TableCell({
-              children: [
-                new Paragraph({
-                  text: articulo.codigoSnies,
-                }),
-              ],
-            }),
-          ],
-        });
-      });
-  }
-
   let autoRowsPresent = createMembersArrayForTablePresent();
   let autoRowsAusent = createMembersArrayForTableAusent();
   let autoRowsInvit = createMembersArrayForTableInvit();
-  let autoRowsHomologa = createArticuloHomologa();
-  let autoRowsAutoriza = createAutoriza();
 
-  const fixedRowsHomologa = rowsHomo.concat(autoRowsHomologa);
-  const fixedRowsAutoriza = rowsAutrz.concat(autoRowsAutoriza);
   const fixedRowsPresent = rows.concat(autoRowsPresent);
   const fixedRowsAusent = rows.concat(autoRowsAusent);
   const fixedRowsInvit = rows.concat(autoRowsInvit);
@@ -455,23 +588,6 @@ export const sendEmailPdf = async (req, res) => {
   });
   const tableInvit = new Table({
     rows: fixedRowsInvit,
-    width: {
-      size: 100,
-      type: WidthType.AUTO,
-    },
-    alignment: AlignmentType.CENTER,
-  });
-  const tableHomologa = new Table({
-    rows: fixedRowsHomologa,
-    width: {
-      size: 100,
-      type: WidthType.AUTO,
-    },
-    alignment: AlignmentType.CENTER,
-  });
-
-  const tableAutoriza = new Table({
-    rows: fixedRowsAutoriza,
     width: {
       size: 100,
       type: WidthType.AUTO,
@@ -564,49 +680,44 @@ export const sendEmailPdf = async (req, res) => {
     if (!votosProcesados.has(clave)) {
       votosProcesados.add(clave);
 
-      const parrafos = [
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: `Artículos ${(index + 1).toString()} ${voto.titulo}_${
-                voto.nombreAspirante
-              }`,
-              bold: true,
-            }),
-          ],
-          alignment: AlignmentType.CENTER,
-        }),
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: `Aprobar la solicitud de ${voto.titulo} del estudiante ${voto.nombreAspirante}, identificado con ${voto.tipoDocumento} número ${voto.noDocumento}. ${voto.observacion}. Aprobado por ${voto.Aprobacion}`,
-              alignment: AlignmentType.JUSTIFIED,
-            }),
-          ],
-        }),
-      ];
-
-      // Condicionales para agregar tablas adicionales según el título del artículo
       if (
-        voto.titulo === "Homologación Interna" ||
-        voto.titulo === "Homologación Externa"
+        voto.titulo !== "Homologación Interna" &&
+        voto.titulo !== "Homologación Externa" &&
+        voto.titulo !== "Autorización de expedición de títulos académicos"
       ) {
-        parrafos.push(tableHomologa); // Agregar tabla de homologación
-      } else if (
-        voto.titulo === "Autorización de expedición de títulos académicos"
-      ) {
-        parrafos.push(tableAutoriza); // Agregar tabla de autorización de título
+        // Agregar lógica específica para otros tipos de votos si es necesario
+        const parrafos = [
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: `Artículos # ${voto.titulo}_${voto.nombreAspirante}`,
+                style: "Strong",
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+          }),
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: `Aprobar la solicitud de ${voto.titulo} del estudiante ${voto.nombreAspirante}, identificado con ${voto.tipoDocumento} número ${voto.noDocumento}. ${voto.observacion}. Aprobado por ${voto.Aprobacion}`,
+                alignment: AlignmentType.JUSTIFIED,
+              }),
+            ],
+          }),
+        ];
       }
-
-      parrafosArticulos.push(parrafos);
     }
   });
+  
 
+  console.log(parrafosArticulos);
   const lugarTexto =
     lugar === "LDS"
-      ? "Laboratorio de sistemas (LDS)"
+      ? "Labor0atorio de sistemas (LDS)"
       : lugar === "LADSIF"
       ? "Laboratorio de análisis de datos e investigación (LADSIF)"
+      : lugar === "LMF"
+      ? "Laboratorio Múltiple de Física (LMF)"
       : lugar
       ? lugar
       : "...";
@@ -676,7 +787,6 @@ export const sendEmailPdf = async (req, res) => {
             alignment: AlignmentType.CENTER,
             style: "Strong",
           }),
-          // table,
           tablePresent,
           new Paragraph({
             text: "MIEMBROS AUSENTES",
@@ -684,7 +794,6 @@ export const sendEmailPdf = async (req, res) => {
             alignment: AlignmentType.CENTER,
             style: "Strong",
           }),
-          // table,
           tableAusent,
           new Paragraph({
             text: "MIEMBROS INVITADOS",
@@ -697,11 +806,7 @@ export const sendEmailPdf = async (req, res) => {
             text: "DESARROLLO DEL ORDEN DEL DIA",
             heading: HeadingLevel.HEADING_2,
             alignment: AlignmentType.CENTER,
-            style: {
-              paragraph: {
-                color: "000000",
-              },
-            },
+            style: "Strong",
           }),
           ...cronograma.split("\n").map(
             (line) =>
@@ -721,100 +826,25 @@ export const sendEmailPdf = async (req, res) => {
             text: "RESUELVE",
             heading: HeadingLevel.HEADING_2,
             alignment: AlignmentType.CENTER,
-            style: "Strong"
+            style: "Strong",
           }),
           ...parrafosArticulos.flat(),
         ],
       },
+      {
+        properties: {
+          type: "continuous",
+        },
+        children: fixDocVotosTemp
+      },
+      {
+        properties: {
+          type: "continuous",
+        },
+        children: fixDocVotosAutoriza,
+      },
     ],
   });
-
-  // GENERAR PDF Y ENVIARLO
-  // const doc = new jsPDF();
-
-  // ESCRIBE PRIMERA LINEA, ESTABLECE TAMAÑO DE FUENTE, COLOR, CONTENIDO Y POSICIÓN
-  // doc.addImage(LogoUNAC, "PNG", 10, 10, 50, 50, );
-  // doc.setFontSize(18);
-  // doc.text(actaData ? actaData.TITULO : "...", 50, 10);
-  // doc.setFontSize(12);
-  // doc.text(actaData ? actaData.SUBTITULO : "...", 95, 15);
-  // doc.setFontSize(12);
-  // doc.text(
-  //   actaData
-  //     ? `${actaData.REFERENCIA.acuerdo} - ${numeroRef} - ${actaData.REFERENCIA.anno}`
-  //     : "...",
-  //   90,
-  //   25
-  // );
-  // doc.text(moment(fechaCreacion).format(`D [de] MMMM [de] YYYY`), 90, 30);
-
-  // doc.setFontSize(12);
-  // doc.text(
-  //   `${actaData.PROLOGO.descAntesDeLaFecha} ${actaData.NOMBRE_INSTITUCION},
-  //   reunidos el ${fechaCreacionPrologoFormat} en el ${lugarTexto}, ${actaData.PROLOGO.desDespuesFecha},
-  //   sesionó de ${horaInicioFormat} - ${horaFinalFormat}, ${actaData.PROLOGO.desFinal}`,
-  //   10,
-  //   40
-  // );
-  //   const contenidoTexto = `${actaData.PROLOGO.descAntesDeLaFecha} ${actaData.NOMBRE_INSTITUCION},
-  // reunidos el ${fechaCreacionPrologoFormat} en el ${lugarTexto}, ${actaData.PROLOGO.desDespuesFecha},
-  // sesionó de ${horaInicioFormat} - ${horaFinalFormat}, ${actaData.PROLOGO.desFinal}`;
-
-  // Dividir el contenido en líneas
-  // const lines = doc.splitTextToSize(
-  //   contenidoTexto,
-  //   doc.internal.pageSize.getWidth() - 20
-  // );
-
-  // Agregar las líneas de texto
-  // doc.text(lines, 10, 40);
-
-  // doc.setFontSize(12);
-  // doc.text("Miembros Presentes:", 10, 70);
-  // doc.text(miembrosPresentes, 20, 70);
-  // doc.setFontSize(12);
-  // doc.text("Miembros Ausentes:", 10, 80);
-  // doc.text(miembrosPresentes, 20, 70);
-  // doc.setFontSize(12);
-  // doc.text("Miembros Invitados:", 10, 90);
-  // doc.text(miembrosPresentes, 20, 70);
-
-  // doc.setFontSize(12);
-  // doc.text("DESARROLLO DEL ORDEN DEL DIA", 50, 100);
-  // const ordenDelDia = [
-  //   "1. Apertura de la reunión:",
-  //   "[Descripción del primer punto]",
-  //   "2. Lectura y aprobación del acta anterior:",
-  //   "[Descripción del segundo punto]",
-  //   // ... agregar más puntos del orden del día
-  // ];
-  // doc.text(ordenDelDia, 20, 110);
-
-  // Agregar más contenido siguiendo el mismo patrón
-
-  // doc.setFontSize(12);
-  // doc.text(`________________________`, 30, 250);
-  // doc.text(`${actaData.FIRMAS.JFNM.nombre}`, 30, 255);
-  // doc.text(`${actaData.FIRMAS.JFNM.cargo}`, 30, 260);
-  // doc.text(`________________________`, 100, 250);
-  // doc.text(`${actaData.FIRMAS.OJD.nombre}`, 100, 255);
-  // doc.text(`${actaData.FIRMAS.OJD.cargo}`, 100, 260);
-
-  // doc.addPage();
-  // doc.setFontSize(16);
-  // doc.setTextColor(18, 47, 117);
-  // doc.text(`Número de Referencia: ${numeroRef}`, 5, 20);
-
-  // doc.setFontSize(24);
-  // doc.setTextColor(100);
-  // doc.text(`Lugar del acta: ${lugar}`, 5, 40);
-
-  // GUARDA EL PDF EN LA CARPETA TEMPORAL
-  // doc.save(`src/temp/acta_ref_${numeroRef}.pdf`);
-
-  // const rootPath = (refFile) => {
-  //   return path.join(process.cwd(), `src/temp/acta_ref_${refFile}.pdf`);
-  // };
 
   // Documentos de soporte
   let statMsg;
@@ -878,7 +908,7 @@ export const sendEmailPdf = async (req, res) => {
     subject,
     text: bodyEmail,
     html: `
-      <h1>Correo enviado desde nodemailer para ${to}</h1>
+      <h3>Correo enviado desde nodemailer para ${to}</h3>
        <h3>Se lo mandó la persona: ${name}</h3>
       <p>${bodyEmail}</p>
       <span style="color: #908890;font-size: 16px; font-weight: bold;">
