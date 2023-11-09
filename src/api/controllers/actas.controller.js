@@ -335,7 +335,7 @@ export const sendActa = async (req, res, next) => {
               new TableCell({
                 children: [
                   new Paragraph({
-                    text: articulo.nota,
+                    text: articulo.notaCalificacion,
                   }),
                 ],
               }),
@@ -591,7 +591,7 @@ export const sendActa = async (req, res, next) => {
       }
     });
 
-    const lugarTexto =
+        const lugarTexto =
       lugar === "LDS"
         ? "Labor0atorio de sistemas (LDS)"
         : lugar === "LADSIF"
@@ -601,7 +601,7 @@ export const sendActa = async (req, res, next) => {
         : lugar
         ? lugar
         : "...";
-
+    
     // USO BÁSICO
     const doc = new Document({
       sections: [
