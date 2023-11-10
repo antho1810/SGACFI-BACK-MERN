@@ -5,7 +5,7 @@ import * as participanteCtrl from '../controllers/participante.controller.js';
 import * as auth from '../../middlewares/authJwt.js';
 
 router
-  .route('/')
+  .route('/#/')
   .get([auth.checkAuth], participanteCtrl.getParticipantes)
   .post(
     [auth.checkAuth, auth.isSecretariaOrDecano],
@@ -13,7 +13,7 @@ router
   );
 
 router
-  .route('/id/:id')
+  .route('7#/id/:id')
   .get([auth.checkAuth], participanteCtrl.getParticipanteById)
   .put(
     [auth.checkAuth, auth.isSecretariaOrDecano],
