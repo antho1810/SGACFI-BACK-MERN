@@ -86,20 +86,20 @@ const update = multer({ storage: uploadStorage });
 
 
 // DONWLOAD PDF
-router.get('/#/descargar/referencia/:numeroRef', [auth.checkAuth, auth.isSecretariaOrDecano], actasCtrl.sendActa);
+router.get('/descargar/referencia/:numeroRef', [auth.checkAuth, auth.isSecretariaOrDecano], actasCtrl.sendActa);
 
 // ACTAS ROUTES CRUD
-router.get('/#/', [auth.checkAuth], actasCtrl.getActas);
-router.get('/#/referencia/:numeroRef', [auth.checkAuth], actasCtrl.getActaByRef);
+router.get('/', [auth.checkAuth], actasCtrl.getActas);
+router.get('/referencia/:numeroRef', [auth.checkAuth], actasCtrl.getActaByRef);
 
 router.post(
-  '/#/',
+  '/',
   [auth.checkAuth, auth.isSecretariaOrDecano],
   actasCtrl.createActas
 );
 
 router.post(
-  "/#/carga",
+  "/carga",
   [auth.checkAuth, upload.array("soportes")],
   (req, res) => {
     res.status(200).json({ message: "Archivos cargados exitosamente" });
@@ -107,7 +107,7 @@ router.post(
 );
 
 router.post(
-  "/#/carga/actualizar/referencia/:ref",
+  "/carga/actualizar/referencia/:ref",
   [auth.checkAuth, update.array("updateSoportes")],
   (req, res) => {
     res.status(200).json({ message: "Archivos cargados exitosamente" });
@@ -115,19 +115,19 @@ router.post(
 );
 
 router.put(
-  '/#/referencia/:numeroRef',
+  '/referencia/:numeroRef',
   [auth.checkAuth, auth.isSecretariaOrDecano],
   actasCtrl.updateActaByRef
 );
 
 router.put(
-  '/#/autorizacion/referencia/:numeroRef',
+  '/autorizacion/referencia/:numeroRef',
   [auth.checkAuth, auth.isSecretariaOrDecano],
   actasCtrl.updateStatusActa
 );
 
 router.delete(
-  '/#/id/:id',
+  '/id/:id',
   [auth.checkAuth, auth.isSecretariaOrDecano],
   actasCtrl.deleteActaByRef
 );
