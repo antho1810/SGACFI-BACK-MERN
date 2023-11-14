@@ -157,9 +157,7 @@ export const sendEmailPdf = async (req, res) => {
     });
     return [
       new Paragraph({
-        text: `Artículos ${(index + 1).toString()} ${obj.titulo}_${
-          obj.nombreAspirante
-        }`,
+        text: `Artículos # ${obj.titulo}_${obj.nombreAspirante}`,
         style: "Strong",
         spacing: {
           before: 200,
@@ -239,8 +237,14 @@ export const sendEmailPdf = async (req, res) => {
       }),
     ];
   });
+  // console.log(VotosAutoriza);
 
-  console.log(VotosAutoriza);
+  let fixDocVotosAutoriza = [];
+  for (let i = 0; i < VotosAutoriza.length; i++) {
+    for (let j = 0; j < VotosAutoriza[i].length; j++) {
+      fixDocVotosAutoriza.push(VotosAutoriza[i][j]);
+    }
+  }
 
   const objetosAgrupados = articulos
     .filter((match) => {
@@ -278,7 +282,7 @@ export const sendEmailPdf = async (req, res) => {
 
       return acumulador;
     }, []);
-  console.dir(objetosAgrupados);
+  // console.dir(objetosAgrupados);
 
   // Homologacion
   const generateVotosTable = objetosAgrupados.map((obj, index) => {
@@ -322,9 +326,7 @@ export const sendEmailPdf = async (req, res) => {
     });
     return [
       new Paragraph({
-        text: `Artículos ${(index + 1).toString()} ${obj.titulo}_${
-          obj.nombreAspirante
-        }`,
+        text: `Artículos # ${obj.titulo}_${obj.nombreAspirante}`,
         style: "Strong",
         spacing: {
           before: 200,
@@ -391,22 +393,13 @@ export const sendEmailPdf = async (req, res) => {
     ];
   });
 
-  
   let fixDocVotosTemp = [];
-
   for (let i = 0; i < generateVotosTable.length; i++) {
     for (let j = 0; j < generateVotosTable[i].length; j++) {
       fixDocVotosTemp.push(generateVotosTable[i][j]);
     }
   }
 
-  let fixDocVotosAutoriza = [];
-
-  for (let i = 0; i < VotosAutoriza.length; i++) {
-    for (let j = 0; j < VotosAutoriza[i].length; j++) {
-      fixDocVotosAutoriza.push(VotosAutoriza[i][j]);
-    }
-  }
   // --- DOCX ---
   const rows = [
     // DEFINE LAS FILAS QUE HAYAN EN LA TABLA
@@ -672,45 +665,189 @@ export const sendEmailPdf = async (req, res) => {
     ],
   });
 
-  const parrafosArticulos = [];
-  const votosProcesados = new Set();
+  // OTROS VOTOS
+  const otrosVotosGroup = articulos.filter((articulo) => {
+    return (
+      articulo["titulo"] !== "Homologación Interna" ||
+      articulo["titulo"] !== "Homologación Externa" ||
+      articulo["titulo"] !== "Autorización de expedición de títulos académicos"
+    );
+  });
 
-  articulos.forEach((voto, index) => {
-    const clave = `${voto.titulo}_${voto.nombreAspirante}`;
-    if (!votosProcesados.has(clave)) {
-      votosProcesados.add(clave);
+  console.log(otrosVotosGroup)
 
-      if (
-        voto.titulo !== "Homologación Interna" &&
-        voto.titulo !== "Homologación Externa" &&
-        voto.titulo !== "Autorización de expedición de títulos académicos"
-      ) {
-        // Agregar lógica específica para otros tipos de votos si es necesario
-        const parrafos = [
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: `Artículos # ${voto.titulo}_${voto.nombreAspirante}`,
-                style: "Strong",
-              }),
-            ],
-            alignment: AlignmentType.CENTER,
-          }),
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: `Aprobar la solicitud de ${voto.titulo} del estudiante ${voto.nombreAspirante}, identificado con ${voto.tipoDocumento} número ${voto.noDocumento}. ${voto.observacion}. Aprobado por ${voto.Aprobacion}`,
-                alignment: AlignmentType.JUSTIFIED,
-              }),
-            ],
-          }),
-        ];
-      }
+  const otrosVotosDoc = otrosVotosGroup.map((voto) => {
+    if (voto.titulo === "Tranferencia interna") {
+      return [
+        new Paragraph({
+          text: `Articulo # ${voto.titulo}_${voto.nombreAspirante}`,
+          style: "Strong",
+          spacing: {
+            before: 200,
+            after: 50,
+          },
+        }),
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: `Aprobar la solicitud de ${voto.titulo} del estudiante ${voto.nombreAspirante}, identificado con ${voto.tipoDocumento} número ${voto.noDocumento}. ${voto.observacion}. Aprobado por ${voto.Aprobacion}`,
+              alignment: AlignmentType.JUSTIFIED,
+            }),
+          ],
+        }),
+      ];
+    } else if (voto.titulo === "Suficiencia") {
+      return [
+        new Paragraph({
+          text: `Articulo # ${voto.titulo}_${voto.nombreAspirante}`,
+          style: "Strong",
+          spacing: {
+            before: 200,
+            after: 50,
+          },
+        }),
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: `Aprobar la solicitud de ${voto.titulo} del estudiante ${voto.nombreAspirante}, identificado con ${voto.tipoDocumento} número ${voto.noDocumento}. ${voto.observacion}. Aprobado por ${voto.Aprobacion}`,
+              alignment: AlignmentType.JUSTIFIED,
+            }),
+          ],
+        }),
+      ];
+    } else if (voto.titulo === "Materia dirigida") {
+      return [
+        new Paragraph({
+          text: `Articulo # ${voto.titulo}_${voto.nombreAspirante}`,
+          style: "Strong",
+          spacing: {
+            before: 200,
+            after: 50,
+          },
+        }),
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: `Aprobar la solicitud de ${voto.titulo} del estudiante ${voto.nombreAspirante}, identificado con ${voto.tipoDocumento} número ${voto.noDocumento}. ${voto.observacion}. Aprobado por ${voto.Aprobacion}`,
+              alignment: AlignmentType.JUSTIFIED,
+            }),
+          ],
+        }),
+      ];
+    } else if (voto.titulo === "Reingreso") {
+      return [
+        new Paragraph({
+          text: `Articulo # ${voto.titulo}_${voto.nombreAspirante}`,
+          style: "Strong",
+          spacing: {
+            before: 200,
+            after: 50,
+          },
+        }),
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: `Aprobar la solicitud de ${voto.titulo} del estudiante ${voto.nombreAspirante}, identificado con ${voto.tipoDocumento} número ${voto.noDocumento}. ${voto.observacion}. Aprobado por ${voto.Aprobacion}`,
+              alignment: AlignmentType.JUSTIFIED,
+            }),
+          ],
+        }),
+        ,
+      ];
+    } else if (
+      voto.titulo === "Autorización para cursar materia con otra malla"
+    ) {
+      return [
+        new Paragraph({
+          text: `Articulo # ${voto.titulo}_${voto.nombreAspirante}`,
+          style: "Strong",
+          spacing: {
+            before: 200,
+            after: 50,
+          },
+        }),
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: `Aprobar la solicitud de ${voto.titulo} del estudiante ${voto.nombreAspirante}, identificado con ${voto.tipoDocumento} número ${voto.noDocumento}. ${voto.observacion}. Aprobado por ${voto.Aprobacion}`,
+              alignment: AlignmentType.JUSTIFIED,
+            }),
+          ],
+        }),
+      ];
+    } else if (voto.titulo === "Matricula de honor") {
+      return [
+        new Paragraph({
+          text: `Articulo # ${voto.titulo}_${voto.nombreAspirante}`,
+          style: "Strong",
+          spacing: {
+            before: 200,
+            after: 50,
+          },
+        }),
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: `Aprobar la solicitud de ${voto.titulo} del estudiante ${voto.nombreAspirante}, identificado con ${voto.tipoDocumento} número ${voto.noDocumento}. ${voto.observacion}. Aprobado por ${voto.Aprobacion}`,
+              alignment: AlignmentType.JUSTIFIED,
+            }),
+          ],
+        }),
+      ];
+    } else if (
+      voto.titulo === "Modificación de calificaciones a un periodo cerrado"
+    ) {
+      return [
+        new Paragraph({
+          text: `Articulo # ${voto.titulo}_${voto.nombreAspirante}`,
+          style: "Strong",
+          spacing: {
+            before: 200,
+            after: 50,
+          },
+        }),
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: `Aprobar la solicitud de ${voto.titulo} del estudiante ${voto.nombreAspirante}, identificado con ${voto.tipoDocumento} número ${voto.noDocumento}. ${voto.observacion}. Aprobado por ${voto.Aprobacion}`,
+              alignment: AlignmentType.JUSTIFIED,
+            }),
+          ],
+        }),
+      ];
+    } else if (voto.titulo === "Materia intensiva") {
+      return [
+        new Paragraph({
+          text: `Articulo # ${voto.titulo}_${voto.nombreAspirante}`,
+          style: "Strong",
+          spacing: {
+            before: 200,
+            after: 50,
+          },
+        }),
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: `Aprobar la solicitud de ${voto.titulo} del estudiante ${voto.nombreAspirante}, identificado con ${voto.tipoDocumento} número ${voto.noDocumento}. ${voto.observacion}. Aprobado por ${voto.Aprobacion}`,
+              alignment: AlignmentType.JUSTIFIED,
+            }),
+          ],
+        }),
+      ];
     }
   });
-  
 
-  console.log(parrafosArticulos);
+
+  console.log(otrosVotosDoc)
+
+  // let fixDocOtrosVotosTemp = [];
+
+  // for (let i = 0; i < otrosVotosDoc.length; i++) {
+  //   for (let j = 0; j < otrosVotosDoc[i].length; j++) {
+  //     fixDocOtrosVotosTemp.push(otrosVotosDoc[i][j]);
+  //   }
+  // }
+
   const lugarTexto =
     lugar === "LDS"
       ? "Labor0atorio de sistemas (LDS)"
@@ -828,14 +965,21 @@ export const sendEmailPdf = async (req, res) => {
             alignment: AlignmentType.CENTER,
             style: "Strong",
           }),
-          ...parrafosArticulos.flat(),
+          // ...parrafosArticulos.flat(),
+          // parrafosArticulos.flat().forEach(parrafo => addParagraph(parrafo)),
         ],
       },
+      // {
+      //   properties: {
+      //     type: "continuous",
+      //   },
+      //   children: parrafosArticulos,
+      // },
       {
         properties: {
           type: "continuous",
         },
-        children: fixDocVotosTemp
+        children: fixDocVotosTemp,
       },
       {
         properties: {
@@ -843,6 +987,12 @@ export const sendEmailPdf = async (req, res) => {
         },
         children: fixDocVotosAutoriza,
       },
+      // {
+      //   properties: {
+      //     type: "continuous",
+      //   },
+      //   children: fixDocOtrosVotosTemp,
+      // },
     ],
   });
 
